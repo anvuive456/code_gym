@@ -1,0 +1,60 @@
+# Node.js dependencies
+node_modules/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Dependency directories
+node_modules/
+jspm_packages/
+
+# TypeScript
+*.tsbuildinfo
+dist/
+build/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Debugging
+.vscode/
+*.swp
+*.swo
+
+# Optional npm cache directory
+.npm/
+
+# TypeORM migration
+src/migration/*.js
+src/migration/*.js.map
+src/seeds/*.js
+src/seeds/*.js.map
+
+# Mac system files
+.DS_Store
+
+# IDE files
+.idea/
+*.iml
+
+# Coverage directory used by tools like istanbul/jest
+coverage/
+
+# Temporary files
+tmp/
+temp/
+
+# Miscellaneous
+*.log
+*.bak
+*.old
+*.save
+
+# Images and assets
+src/web/public/uploads/
