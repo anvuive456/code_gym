@@ -2,6 +2,7 @@
 import "express-session";
 
 declare module "express-session" {
+    //thông tin login cho server
     interface SessionData {
         user: {
             // Định nghĩa kiểu cho user

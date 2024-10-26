@@ -7,12 +7,19 @@ import dbMiddleware from "@middlewares/db.middleware";
 import path from "path";
 import * as glob from "glob";
 import expressEjsLayouts from "express-ejs-layouts";
+import AdminController from "@features/admin/admin.controller";
 
 async function loadControllers(app: Express) {
     // Tìm tất cả các file controller trong folder features/**/*.controller.ts
-    const controllers = glob.globSync(
-        path.join(__dirname, "features/**/*.controller.{ts,js}"),
+    console.log('controllers path',  path.resolve("./","src/","features","**","*.controller.{ts,js}"))
+    const controllers = await glob.glob(
+        path.join(__dirname, "features","**","*.controller.{ts,js}"),
+        {
+            // dotRelative: true,
+            posix: true,
+        }
     );
+    console.log('controllers', controllers)
 
     // Duyệt qua từng file controller và import nó
     for (const controller of controllers) {
@@ -102,8 +109,8 @@ async function main() {
     app.use(morganMiddleware);
     app.use(dbMiddleware);
 
-    loadControllers(app);
-
+    // loadControllers(app);
+    app.use(new AdminController().router);
     app.listen(port, () => {
         Logger.info(`Server is up and running @ http://localhost:${port}`);
     });

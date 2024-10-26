@@ -1,6 +1,6 @@
 import morgan, { StreamOptions } from "morgan";
 import Logger from "@config/logger";
-
+// morgan dùng ðe lang nghe tat ca các router => print
 // Override the stream method by telling
 // Morgan to use our custom logger instead of the console.log.
 const stream: StreamOptions = {

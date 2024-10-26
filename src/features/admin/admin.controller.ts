@@ -1,6 +1,7 @@
 import { User } from "@entities/user.entity";
 import { BaseController } from "@interfaces/controller.interface";
 import { Request, Response } from "express";
+import { title } from "process";
 
 class AdminController extends BaseController {
     protected getBasePath(): string {
@@ -10,8 +11,11 @@ class AdminController extends BaseController {
     protected initRoutes(): void {
         this.router.get(`${this.getBasePath()}/signin`, this.signInView);
         this.router.post(`${this.getBasePath()}/signin`, this.signIn);
+        this.router.get(`${this.getBasePath()}/`, this.viewHomePage);
     }
-
+    private async viewHomePage(req: Request, res: Response) {
+        return res.render('admin/home_page',{title:"Home Page"});
+    }
     private async signOut(req: Request, res: Response) {
         return req.session.destroy((err: any) => {
             return res.redirect("/admin/signin");
@@ -40,7 +44,7 @@ class AdminController extends BaseController {
                 role: user.role.name,
                 username: user.username,
             }; // Lưu thông tin người dùng vào session
-            res.redirect("/admin/dashboard");
+            res.redirect("/admin");
         } else {
             res.redirect("/admin/signin?error=Invalid credentials");
         }

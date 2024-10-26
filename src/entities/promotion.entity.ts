@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable } from 'typeorm';
-import { GymType } from "@entities/gym_type.entity";
+import { FitnessPackage } from "@entities/fitness_package.entity";
 import { Branch } from "@entities/branch.entity";
 
 
@@ -29,7 +29,7 @@ export class Promotion {
     branches: Branch[];
 
     // Quan hệ với loại phòng tập
-    @ManyToMany(() => GymType, gymType => gymType.promotions)
+    @ManyToMany(() => FitnessPackage, fitnesspackage => fitnesspackage.promotions)
     @JoinTable()
-    gymTypes: GymType[];
+    fitnesspackages: FitnessPackage[];
 }

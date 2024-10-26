@@ -3,7 +3,7 @@ import { Promotion } from "@entities/promotion.entity";
 import { Branch } from "@entities/branch.entity";
 
 @Entity()
-export class GymType {
+export class FitnessPackage {
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -13,10 +13,10 @@ export class GymType {
     @Column()
     description: string;
 
-    @ManyToMany(() => Promotion,promotion => promotion.gymTypes)
+    @ManyToMany(() => Promotion,promotion => promotion.fitnesspackages)
     @JoinTable()
     promotions: Promotion[];
 
-    @ManyToMany(() => Branch, branch => branch.gymTypes)
+    @ManyToMany(() => Branch, branch => branch.fitnesspackages)
     branches: Branch[];
 }

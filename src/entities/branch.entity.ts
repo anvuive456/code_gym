@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToMany, JoinTable } from "typeorm";
 import { User } from "@entities/user.entity";
-import { GymType } from "@entities/gym_type.entity";
+import { FitnessPackage } from "@entities/fitness_package.entity";
 import { Promotion } from "@entities/promotion.entity";
 
 @Entity()
@@ -23,9 +23,9 @@ export class Branch {
     @OneToMany(() => User, user => user.branch)
     users: User[];
 
-    @ManyToMany(() => GymType, gymType => gymType.branches)
+    @ManyToMany(() => FitnessPackage, fitnesspackage => fitnesspackage.branches)
     @JoinTable()
-    gymTypes: GymType[];
+    fitnesspackages: FitnessPackage[];
 
     @ManyToMany(() => Promotion, promotion => promotion.branches)
     promotions: Promotion[];
