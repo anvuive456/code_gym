@@ -9,6 +9,7 @@ declare module "express-session" {
             id: number; // Hoặc kiểu của ID người dùng
             username: string; // Tên người dùng
             role: string;
+            password:string;
         };
     }
 }
