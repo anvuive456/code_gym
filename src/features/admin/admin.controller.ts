@@ -10,18 +10,21 @@ class AdminController extends BaseController {
     protected initRoutes(): void {
         this.router.get(`${this.getBasePath()}/signin`, this.signInView);
         this.router.post(`${this.getBasePath()}/signin`, this.signIn);
+        this.router.post(`${this.getBasePath()}/signout`, this.signOut);
     }
 
     private async signOut(req: Request, res: Response) {
-        return req.session.destroy((err: any) => {
-            return res.redirect("/admin/signin");
+        req.session.destroy((err: any) => {
+            if(!err){
+                return res.redirect("/admin/signin");
+            }
         });
     }
 
     private async signInView(req: Request, res: Response) {
         return res.render("admin/signin", {
             error: req.query.error,
-            title: 'Admin Panel',
+            title: "Admin Panel",
         });
     }
 
