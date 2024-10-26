@@ -57,4 +57,4 @@ temp/
 *.save
 
 # Images and assets
-src/web/public/uploads/
+src/web/public/images/
