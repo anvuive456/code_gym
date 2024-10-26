@@ -12,9 +12,16 @@ class AdminController extends BaseController {
         this.router.post(`${this.getBasePath()}/signin`, this.signIn);
     }
 
+    private async signOut(req: Request, res: Response) {
+        return req.session.destroy((err: any) => {
+            return res.redirect("/admin/signin");
+        });
+    }
+
     private async signInView(req: Request, res: Response) {
         return res.render("admin/signin", {
             error: req.query.error,
+            title: 'Admin Panel',
         });
     }
 
@@ -30,7 +37,7 @@ class AdminController extends BaseController {
         if (user) {
             req.session.user = {
                 id: user.id,
-                role: user.role,
+                role: user.role.name,
                 username: user.username,
             }; // Lưu thông tin người dùng vào session
             res.redirect("/admin/dashboard");

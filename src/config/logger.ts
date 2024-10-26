@@ -30,7 +30,7 @@ const colors = {
     info: "green",
     http: "magenta",
     debug: "white",
-};
+} as const;
 
 // Tell winston that you want to link the colors
 // defined above to the severity levels.
@@ -39,7 +39,7 @@ winston.addColors(colors);
 // Chose the aspect of your log customizing the log format.
 const format = winston.format.combine(
     // Add the message timestamp with the preferred format
-    winston.format.timestamp({ format: "YYYY-MM-DD HH:mm:ss:ms" }),
+    winston.format.timestamp({ format: "DD-MM-YYYY HH:mm:ss:ms" }),
     // Tell Winston that the logs must be colored
     winston.format.colorize({ all: true }),
     // Define the format of the message showing the timestamp, the level and the message
