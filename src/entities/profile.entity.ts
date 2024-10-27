@@ -13,6 +13,9 @@ export class Profile {
     gender: string;
 
     @Column()
+    phone: string;
+
+    @Column()
     photo: string;
 
     @OneToOne(() => User, (user) => user.profile)
