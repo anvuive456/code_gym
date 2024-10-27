@@ -8,8 +8,7 @@ declare module "express-session" {
             // Định nghĩa kiểu cho user
             id: number; // Hoặc kiểu của ID người dùng
             username: string; // Tên người dùng
-            role: string;
-            password:string;
+            role: string; 
         };
     }
 }

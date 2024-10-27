@@ -11,7 +11,6 @@ import AdminController from "@features/admin/admin.controller";
 
 async function loadControllers(app: Express) {
     // Tìm tất cả các file controller trong folder features/**/*.controller.ts
-    console.log('controllers path',  path.resolve("./","src/","features","**","*.controller.{ts,js}"))
     const controllers = await glob.glob(
         path.join(__dirname, "features","**","*.controller.{ts,js}"),
         {
@@ -19,7 +18,6 @@ async function loadControllers(app: Express) {
             posix: true,
         }
     );
-    console.log('controllers', controllers)
 
     // Duyệt qua từng file controller và import nó
     for (const controller of controllers) {

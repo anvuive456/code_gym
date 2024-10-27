@@ -1,7 +1,17 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import {
+    BeforeInsert,
+    BeforeUpdate,
+    Column,
+    Entity,
+    JoinColumn,
+    ManyToOne,
+    OneToOne,
+    PrimaryGeneratedColumn,
+} from "typeorm";
 import { Profile } from "@entities/profile.entity";
 import { Role } from "@entities/role.entity";
 import { Branch } from "@entities/branch.entity";
+import bcrypt from "bcrypt";
 
 @Entity({ engine: "InnoDB", name: "users" })
 export class User {
@@ -25,4 +35,9 @@ export class User {
     @ManyToOne(() => Branch, branch => branch.users)
     branch: Branch;
 
+    @BeforeInsert()
+    @BeforeUpdate()
+    updatePassword(){
+        this.password = bcrypt.hashSync(this.password, 10);
+    }
 }

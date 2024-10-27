@@ -2,6 +2,7 @@ import { User } from "@entities/user.entity";
 import { BaseController } from "@interfaces/controller.interface";
 import { Request, Response } from "express";
 import { title } from "process";
+import bcrypt from "bcrypt";
 
 class AdminController extends BaseController {
     protected getBasePath(): string {
@@ -15,15 +16,14 @@ class AdminController extends BaseController {
         this.router.get(`${this.getBasePath()}/`, this.viewHomePage);
     }
     private async viewHomePage(req: Request, res: Response) {
-        // let data = req.db;
-        // data.getRepository(User).find;
-        return res.render('admin/home_page',{title:"Home Page",
-            // data:data
-        });
+        if (!req.session.user) {
+            return res.redirect("/admin/signin");
+        }
+        return res.render("admin/home_page", { title: "Home Page" });
     }
     private async signOut(req: Request, res: Response) {
         req.session.destroy((err: any) => {
-            if(!err){
+            if (!err) {
                 return res.redirect("/admin/signin");
             }
         });
@@ -43,21 +43,17 @@ class AdminController extends BaseController {
         const user = await db.getRepository(User).findOneBy({
             username,
         });
-
-        console.log('user name ',user?.username);
-        console.log('password ',user?.password);
-        if (user) {
-            console.log('user name ',username);
-            req.session.user = {
-                id: user.id,
-                role: user.password,
-                username: user.username,
-                password:user.password
-            }; // Lưu thông tin người dùng vào session
-            res.redirect("/admin");
-        } else {
-            res.redirect("/admin/signin?error=Invalid credentials");
+        console.log('user1',user);
+        if (!user || !await bcrypt.compare(password, user.password)){
+            return res.redirect("/admin/signin?error=Invalid credentials");
         }
+
+        req.session.user = {
+            id: user.id,
+            role: user.role.name,
+            username: user.username,
+        }; // Lưu thông tin người dùng vào session
+        res.redirect("/admin");
     }
 }
 
