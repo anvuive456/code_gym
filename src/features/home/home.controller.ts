@@ -1,5 +1,11 @@
 import { BaseController } from "@interfaces/controller.interface";
 import { Request, Response } from "express";
+import { SignUpDTO } from "../../dto/sign-up.dto";
+import { User } from "@entities/user.entity";
+import { Role } from "@entities/role.entity";
+import { Profile } from "@entities/profile.entity";
+import { UpdateProfileDto } from "../../dto/update-profile.dto";
+import { upload } from "@middlewares/upload.middleware";
 
 class HomeController extends BaseController {
     protected getBasePath(): string {
@@ -7,19 +13,34 @@ class HomeController extends BaseController {
     }
 
     protected initRoutes(): void {
-        this.router.use((req, res, next) => {
+        this.router.use(async (req, res, next) => {
             res.locals.active = req.path;
+            const message = req.query.message;
+            if (message) {
+                res.locals.message = message;
+            }
+            const ses = req.session.user;
+            const user = await req.db.getRepository(User).findOne({
+                where: { id: ses?.id },
+                relations: ["profile"],
+            });
+            res.locals.userFullName = user?.profile.name;
             next();
         });
-        this.router.get(this.getBasePath(), (req, res) => {
-            return res.redirect("/home");
-        });
+        this.router.get(this.getBasePath(), this.index);
         this.router.get(`${this.getBasePath()}/home`, this.viewHome);
         this.router.get(`${this.getBasePath()}/about`, this.viewAbout);
         this.router.get(`${this.getBasePath()}/feature`, this.viewFeature);
-        this.router.get(`${this.getBasePath()}/class`, this.viewClass);
+        this.router.get(`${this.getBasePath()}/branch`, this.viewBranch);
         this.router.get(`${this.getBasePath()}/contact`, this.viewContact);
         this.router.get(`${this.getBasePath()}/blog`, this.viewBlog);
+        this.router.get(`${this.getBasePath()}/signup`, this.viewSignUp);
+        this.router.post(`${this.getBasePath()}/signup`, this.signUp);
+        this.router.get(`${this.getBasePath()}/signin`, this.viewSignIn);
+        this.router.get(`${this.getBasePath()}/signout`, this.signOut);
+        this.router.get(`${this.getBasePath()}/profile`, this.viewProfile);
+        this.router.post(`${this.getBasePath()}/update-profile`, this.updateProfile);
+        this.router.post(`${this.getBasePath()}/update-photo`, upload.single("photo"), this.updateLogo);
     }
 
     private async viewHome(req: Request, res: Response): Promise<void> {
@@ -51,8 +72,8 @@ class HomeController extends BaseController {
         });
     }
 
-    private async viewClass(req: Request, res: Response) {
-        return res.render("user/class", {
+    private async viewBranch(req: Request, res: Response) {
+        return res.render("user/branch", {
             layout: "layout/user_layout",
 
         });
@@ -63,6 +84,107 @@ class HomeController extends BaseController {
             layout: "layout/user_layout",
 
         });
+    }
+
+    private index(req: Request, res: Response) {
+        return res.redirect("/home");
+    }
+
+    private viewSignUp(req: Request, res: Response) {
+        return res.render("user/signup", {
+            layout: "layout/user_layout",
+        });
+    }
+
+    private viewSignIn(req: Request, res: Response) {
+        return res.render("user/signin", {
+            layout: "layout/user_layout",
+        });
+    }
+
+    private async signUp(req: Request<{}, {}, SignUpDTO>, res: Response) {
+        const db = req.db;
+        const { username, password, email, name, gender } = req.body;
+
+        let role = await db.getRepository(Role).findOne({ where: { name: "Người dùng" } });
+        if (!role) {
+            role = new Role();
+            role.name = "Người dùng";
+            await db.getRepository(Role).save(role);
+        }
+        // Create a profile for the user
+        const profile = new Profile();
+        profile.name = name;
+        profile.gender = gender;
+        profile.photo = "";
+        await db.getRepository(Profile).save(profile); // Save profile first for the one-to-one relation
+        // Create a new user and set properties
+        const user = new User();
+        user.username = username;
+        user.password = password; // Password will be hashed by the @BeforeInsert hook
+        user.role = role;
+        user.profile = profile;
+
+        // Save the user
+        const result = await db.getRepository(User).save(user);
+
+        req.session.user = {
+            id: result.id,
+            username: result.username,
+            role: result.role.name,
+        };
+
+        return res.redirect("/home?message=Đăng ký thành công");
+    }
+
+    private async viewProfile(req: Request, res: Response) {
+        const db = req.db;
+        const ses = req.session.user;
+        const user = await db.getRepository(User).findOne({
+            where: {
+                id: ses?.id,
+            },
+            relations: ["profile"],
+        });
+        return res.render("user/profile", {
+            layout: "layout/user_layout",
+            profile: user?.profile,
+        });
+    }
+
+    private async updateProfile(req: Request<{}, {}, UpdateProfileDto>, res: Response) {
+        const body = req.body;
+        const db = req.db;
+        const ses = req.session.user;
+
+    }
+
+    private async updateLogo(req: Request, res: Response) {
+        if (req.file) {
+            const ses = req.session.user;
+            const db = req.db.getRepository(Profile);
+            const profile = await db.findOne({
+                where: {
+                    user: {
+                        id: ses?.id,
+                    },
+                },
+            });
+            if (profile) {
+                // Cập nhật đường dẫn ảnh mới và lưu vào cơ sở dữ liệu
+                profile.photo = "/uploads/" + req.file.filename;
+                await db.save(profile);
+                res.redirect("/profile");
+            } else {
+                res.status(404).send("Profile not found");
+            }
+        } else {
+            return res.redirect("/profile");
+        }
+    }
+
+    private async signOut(req: Request, res: Response) {
+       
     }
 }
 

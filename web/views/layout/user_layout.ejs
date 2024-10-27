@@ -24,7 +24,7 @@
 <body class="bg-white">
 <!-- Navbar Start -->
 <div class="container-fluid p-0 nav-bar">
-    <nav class="navbar navbar-expand-lg bg-none navbar-dark py-3">
+    <nav class="navbar navbar-expand-lg  navbar-dark py-3">
         <a href="" class="navbar-brand">
             <h1 class="m-0 display-4 font-weight-bold text-uppercase text-white">CodeGym</h1>
         </a>
@@ -33,10 +33,12 @@
         </button>
         <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
             <div class="navbar-nav ml-auto p-4 bg-secondary">
-                <a href="/home" class="nav-item nav-link <%= active.startsWith("/home") && "active" %>">Home</a>
-                <a href="/about" class="nav-item nav-link <%= active.startsWith("/about") && "active" %>">About Us</a>
-                <a href="/feature" class="nav-item nav-link <%= active.startsWith("/feature") && "active" %>">Our Features</a>
-                <a href="/class" class="nav-item nav-link <%= active.startsWith("/class") && "active" %>">Classes</a>
+                <a href="/home" class="nav-item nav-link <%= active.startsWith("/home") && "active" %>">Trang chủ</a>
+                <a href="/about" class="nav-item nav-link <%= active.startsWith("/about") && "active" %>">Giới thiệu</a>
+                <a href="/feature" class="nav-item nav-link <%= active.startsWith("/feature") && "active" %>">Our
+                    Features</a>
+                <a href="/branch" class="nav-item nav-link <%= active.startsWith("/branch") && "active" %>">Chi
+                    nhánh</a>
                 <!--                <div class="nav-item dropdown">-->
                 <!--                    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Pages</a>-->
                 <!--                    <div class="dropdown-menu text-capitalize">-->
@@ -44,7 +46,30 @@
                 <!--                        <a href="single" class="dropdown-item">Blog Detail</a>-->
                 <!--                    </div>-->
                 <!--                </div>-->
-                <a href="/contact" class="nav-item nav-link <%= active.startsWith("/contact") && "active" %>">Contact</a>
+                <a href="/contact"
+                   class="nav-item nav-link <%= active.startsWith("/contact") && "active" %>">Contact</a>
+                <% if(userFullName) {
+                %>
+                    <div class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" id="profileDropdown" role="button" data-toggle="dropdown">
+                            Xin chào, <%= userFullName %>
+                        </a>
+                        <ul class="dropdown-menu text-capitalize" aria-labelledby="profileDropdown">
+                            <li><a class="dropdown-item" href="/profile">Hồ sơ</a></li>
+                            <li><a class="dropdown-item" href="/schedule">Lịch trình</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item text-primary" href="/signout">Đăng xuất</a></li>
+                        </ul>
+
+                    </div>
+                <% } else {
+                %> <a href="/signin" class="btn btn-primary mr-4">Đăng nhập</a>
+                <a href="/signup" class="btn btn-outline-light">Đăng ký</a>
+                <%
+                } %>
+
             </div>
         </div>
     </nav>
