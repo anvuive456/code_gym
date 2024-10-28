@@ -11,7 +11,8 @@ class AdminController extends BaseController {
 
     protected initRoutes(): void {
         this.router.get(`${this.getBasePath()}/signin`, this.signInView);
-        this.router.post(`${this.getBasePath()}/signin`, this.signIn);
+        // this.router.post(`${this.getBasePath()}/signin`,(req)=>{}, this.signIn);
+        this.router.post(`${this.getBasePath()}/signin`,  this.signIn);
         this.router.get(`${this.getBasePath()}/`, this.viewHomePage);
     }
     private async viewHomePage(req: Request, res: Response) {
@@ -38,12 +39,12 @@ class AdminController extends BaseController {
     private async signIn(req: Request, res: Response) {
         const { username, password } = req.body;
 
-        const db = req.db;
-
+        const db = req.db; 
         const user = await db.getRepository(User).findOneBy({
             username,
         });
-        if (!user || !await bcrypt.compare(password, user.password)) {
+        console.log('user1',user);
+        if (!user || !await bcrypt.compare(password, user.password)){
             return res.redirect("/admin/signin?error=Invalid credentials");
         }
 
