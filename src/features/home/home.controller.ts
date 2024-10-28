@@ -45,15 +45,22 @@ class HomeController extends BaseController {
 
     private async viewHome(req: Request, res: Response): Promise<void> {
         const db = req.db;
-
-        return res.render("user/home", {
-            layout: "layout/user_layout",
+        res.renderVue("user/Home.vue", {
+            title: "Home",
+        },{
+            head:{
+                title:'Home CodeGym'
+            }
         });
     }
 
     private async viewAbout(req: Request, res: Response): Promise<void> {
-        return res.render("user/about", {
-            layout: "layout/user_layout",
+        return res.renderVue("App.vue", {
+            vue: {
+                data: {
+                    hehe: "Catch ya",
+                },
+            },
         });
     }
 
@@ -184,7 +191,7 @@ class HomeController extends BaseController {
     }
 
     private async signOut(req: Request, res: Response) {
-       
+
     }
 }
 
