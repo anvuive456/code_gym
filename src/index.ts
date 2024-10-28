@@ -66,17 +66,17 @@ export async function main() {
 
 
     // Cấu hình compile SCSS thành CSS
-    app.use(
-        require("sass-middleware")({
-            src: path.resolve("web", "public", "scss"), // Thư mục chứa file SCSS
-            dest: path.resolve("web", "public", "css"), // Thư mục chứa file CSS được biên dịch
-            debug: true, // Hiển thị log khi biên dịch SCSS
-            outputStyle: "compressed", // Nén CSS
-            prefix: "/css", // Đường dẫn ảo đến CSS
-        }),
-    );
+    // app.use(
+    //     require("sass-middleware")({
+    //         src: path.resolve("web", "public", "scss"), // Thư mục chứa file SCSS
+    //         dest: path.resolve("web", "public", "css"), // Thư mục chứa file CSS được biên dịch
+    //         debug: true, // Hiển thị log khi biên dịch SCSS
+    //         outputStyle: "compressed", // Nén CSS
+    //         prefix: "/css", // Đường dẫn ảo đến CSS
+    //     }),
+    // );
     // Cấu hình static folder cho các tài nguyên CSS, JS, Images
-    app.use(express.static(path.resolve("web", "public")));
+    app.use(express.static(path.resolve("public")));
 
     app.use(express.json());
     app.use(express.urlencoded({ extended: true })); // Để xử lý form data
