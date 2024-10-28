@@ -4,6 +4,9 @@ import { Request, Response } from "express";
 import { title } from "process";
 import bcrypt from "bcrypt";
 
+import { Branch } from "@entities/branch.entity";
+import { FitnessPackage } from "@entities/fitness_package.entity";
+import { Promotion } from "@entities/promotion.entity";
 class AdminController extends BaseController {
     protected getBasePath(): string {
         return "/admin";
@@ -12,14 +15,37 @@ class AdminController extends BaseController {
     protected initRoutes(): void {
         this.router.get(`${this.getBasePath()}/signin`, this.signInView);
         // this.router.post(`${this.getBasePath()}/signin`,(req)=>{}, this.signIn);
-        this.router.post(`${this.getBasePath()}/signin`,  this.signIn);
+        this.router.post(`${this.getBasePath()}/signin`, this.signIn);
         this.router.get(`${this.getBasePath()}/`, this.viewHomePage);
     }
     private async viewHomePage(req: Request, res: Response) {
         if (!req.session.user) {
             return res.redirect("/admin/signin");
         }
-        return res.render("admin/home_page", { title: "Home Page" });
+
+        let branches: Branch[] = [
+            {
+                id: 1,
+                name: "Code gym q8",
+                address: "Quận 8 - HCM",
+                lat: 0,
+                fitnesspackages: [new FitnessPackage()],
+                lng: 0,
+                promotions: [new Promotion()],
+                users: [],
+            },
+            {
+                id: 2,
+                name: "Code gym q11",
+                address: "Quận 11 - HCM",
+                lat: 0,
+                fitnesspackages: [new FitnessPackage()],
+                lng: 0,
+                promotions: [new Promotion()],
+                users: [],
+            },
+        ];
+        return res.render("admin/home_page", { title: "Home Page", branches });
     }
     private async signOut(req: Request, res: Response) {
         req.session.destroy((err: any) => {
@@ -39,22 +65,21 @@ class AdminController extends BaseController {
     private async signIn(req: Request, res: Response) {
         const { username, password } = req.body;
 
-        const db = req.db; 
+        const db = req.db;
         const user = await db.getRepository(User).findOneBy({
             username,
         });
-        console.log('user1',user);
-        if (!user || !await bcrypt.compare(password, user.password)){
-            return res.redirect("/admin/signin?error=Invalid credentials");
+        // if (!user || !await bcrypt.compare(password, user.password)){
+        //     return res.redirect("/admin/signin?error=Invalid credentials");
+        // }
+        if (user) {
+            req.session.user = {
+                id: user.id,
+                role: user.username,
+                username: user.username,
+            }; // Lưu thông tin người dùng vào session
         }
-
-        req.session.user = {
-            id: user.id,
-            role: user.role.name,
-            username: user.username,
-        }; // Lưu thông tin người dùng vào session
         res.redirect("/admin");
     }
 }
-
 export default AdminController;

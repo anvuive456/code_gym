@@ -101,7 +101,7 @@ async function main() {
                 secure: false,
                 maxAge: 1000 * 60 * 60 * 24, // Thời gian sống của cookie (1 ngày)
             },
-        }),
+        })
     );
 
     app.use(morganMiddleware);

@@ -37,7 +37,11 @@
 .btn.btn-primary {
     color: #FFFFFF;
 }
-
+.btn-primary-update {
+   background-color: red;
+    color: #FFFFFF;
+    margin-left: 10px;
+}
 .btn-square {
     width: 38px;
     height: 38px;
