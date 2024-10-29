@@ -7,49 +7,8 @@ import dbMiddleware from "@middlewares/db.middleware";
 import path from "path";
 import AdminController from "@features/admin/admin.controller";
 import HomeController from "@features/home/home.controller";
-import expressVue from "express-vue";
-
-// async function loadControllers(app: Express) {
-//     // Tìm tất cả các file controller trong folder features/**/*.controller.ts
-//     const controllers = await glob.glob(
-//         path.join(__dirname, "features","**","*.controller.{ts,js}"),
-//         {
-//             // dotRelative: true,
-//             posix: true,
-//         }
-//     );
-//
-//     // Duyệt qua từng file controller và import nó
-//     for (const controller of controllers) {
-//         // Sử dụng import() để nạp module
-//         const controllerModule = await import(controller);
-//
-//         // Kiểm tra xem có lớp controller nào được xuất ra không
-//         const ControllerClass = controllerModule.default;
-//
-//         if (ControllerClass) {
-//             // Tạo instance của controller
-//             const controllerInstance = new ControllerClass();
-//             // Đăng ký routes từ controller
-//             app.use(controllerInstance.router);
-//             Logger.info(`Loaded ${ControllerClass.name} from ${controller}`);
-//         } else {
-//             console.error(
-//                 `Controller ${controller} does not have default export`,
-//             );
-//         }
-//     }
-//
-//     // Duyệt các route và show ra
-//     app._router.stack
-//         .filter((r: any) => r.route)
-//         .map(
-//             (r: any) =>
-//                 Object.keys(r.route.methods)[0].toUpperCase().padEnd(7) +
-//                 r.route.path,
-//         )
-//         .forEach(Logger.info);
-// }
+import { createApp } from "../web/entry-server";
+import { renderToString } from "@vue/server-renderer";
 
 export async function main() {
     dotenv.config();
@@ -58,25 +17,9 @@ export async function main() {
     const port = process.env.PORT || 3000;
     app.set("port", port);
 
-    // Cấu hình để sử dụng EJS làm view engine
-    // app.set("view engine", "ejs");
-    // app.set("views", path.resolve("web", "views")); // Đường dẫn đến thư mục views
-    // app.use(expressEjsLayouts);
-    // app.set("layout", "layout/main_layout");
-
-
-    // Cấu hình compile SCSS thành CSS
-    // app.use(
-    //     require("sass-middleware")({
-    //         src: path.resolve("web", "public", "scss"), // Thư mục chứa file SCSS
-    //         dest: path.resolve("web", "public", "css"), // Thư mục chứa file CSS được biên dịch
-    //         debug: true, // Hiển thị log khi biên dịch SCSS
-    //         outputStyle: "compressed", // Nén CSS
-    //         prefix: "/css", // Đường dẫn ảo đến CSS
-    //     }),
-    // );
-    // Cấu hình static folder cho các tài nguyên CSS, JS, Images
     app.use(express.static(path.resolve("public")));
+    app.use("/dist/client", express.static(path.resolve(__dirname, "../dist/client")));
+
 
     app.use(express.json());
     app.use(express.urlencoded({ extended: true })); // Để xử lý form data
@@ -107,17 +50,6 @@ export async function main() {
     app.use(morganMiddleware);
     app.use(dbMiddleware);
 
-
-    await expressVue.use(app, {
-        pagesPath: path.resolve(__dirname, "..", "web", "views"),
-        head: {
-            styles: [
-                {
-                    style: "css/style.min.csss",
-                },
-            ],
-        },
-    });
 
     // await loadControllers(app);
     app.use(new AdminController().router);

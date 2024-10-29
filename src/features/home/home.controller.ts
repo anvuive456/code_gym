@@ -6,6 +6,9 @@ import { Role } from "@entities/role.entity";
 import { Profile } from "@entities/profile.entity";
 import { UpdateProfileDto } from "../../dto/update-profile.dto";
 import { upload } from "@middlewares/upload.middleware";
+import Home from "../../../web/views/user/Home.vue";
+import About from "../../../web/views/user/About.vue";
+import Feature from "../../../web/views/user/Feature.vue";
 
 class HomeController extends BaseController {
     protected getBasePath(): string {
@@ -45,31 +48,16 @@ class HomeController extends BaseController {
 
     private async viewHome(req: Request, res: Response): Promise<void> {
         const db = req.db;
-        res.renderVue("user/Home.vue", {
-            title: "Home",
-        },{
-            head:{
-                title:'Home CodeGym'
-            }
-        });
+        await super.renderVue(req, res, Home);
     }
 
     private async viewAbout(req: Request, res: Response): Promise<void> {
-        return res.renderVue("App.vue", {
-            vue: {
-                data: {
-                    hehe: "Catch ya",
-                },
-            },
-        });
+        return super.renderVue(req, res, About);
     }
 
     private async viewFeature(req: Request, res: Response) {
         const db = req.db;
-        return res.render("user/feature", {
-            layout: "layout/user_layout",
-
-        });
+        return super.renderVue(req, res, Feature);
     }
 
     private async viewBlog(req: Request, res: Response) {
