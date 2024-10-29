@@ -1,18 +1,14 @@
-<script lang="ts">
+<script setup lang="ts">
 import Carousel from "../../components/Carousel.vue";
 import TimeTable from "../../components/TimeTable.vue";
+import NavBar from "./NavBar.vue";
+import { defineComponent } from "vue";
 
-export default {
-    name: "Home",
-    components: { TimeTable, Carousel },
-    data: () => ({
-        title: "HEHE HOME",
-    }),
-};
 </script>
 
 <template>
     <div>
+        <NavBar />
         <Carousel />
         <!-- Gym Class Start -->
         <div class="container gym-class mb-5">
@@ -117,6 +113,7 @@ export default {
         <!-- Features End -->
 
 
+
         <!-- GYM Feature Start -->
         <div class="container feature pt-5">
             <div class="d-flex flex-column text-center mb-5">
@@ -127,7 +124,7 @@ export default {
                 <div class="col-md-6 mb-5">
                     <div class="row align-items-center">
                         <div class="col-sm-5">
-                            <img class="img-fluid mb-3 mb-sm-0" src="images/feature-1.jpg" alt="Image">
+                            <img class="img-fluid mb-3 mb-sm-0" src="/images/feature-1.jpg" alt="Image">
                             <i class="flaticon-barbell"></i>
                         </div>
                         <div class="col-sm-7">
@@ -140,7 +137,7 @@ export default {
                 <div class="col-md-6 mb-5">
                     <div class="row align-items-center">
                         <div class="col-sm-5">
-                            <img class="img-fluid mb-3 mb-sm-0" src="images/feature-2.jpg" alt="Image">
+                            <img class="img-fluid mb-3 mb-sm-0" src="/images/feature-2.jpg" alt="Image">
                             <i class="flaticon-training"></i>
                         </div>
                         <div class="col-sm-7">
@@ -152,7 +149,7 @@ export default {
                 <div class="col-md-6 mb-5">
                     <div class="row align-items-center">
                         <div class="col-sm-5">
-                            <img class="img-fluid mb-3 mb-sm-0" src="images/feature-3.jpg" alt="Image">
+                            <img class="img-fluid mb-3 mb-sm-0" src="/images/feature-3.jpg" alt="Image">
                             <i class="flaticon-trends"></i>
                         </div>
                         <div class="col-sm-7">
@@ -165,7 +162,7 @@ export default {
                 <div class="col-md-6 mb-5">
                     <div class="row align-items-center">
                         <div class="col-sm-5">
-                            <img class="img-fluid mb-3 mb-sm-0" src="images/feature-4.jpg" alt="Image">
+                            <img class="img-fluid mb-3 mb-sm-0" src="/images/feature-4.jpg" alt="Image">
                             <i class="flaticon-support"></i>
                         </div>
                         <div class="col-sm-7">
@@ -196,7 +193,7 @@ export default {
         <!-- Subscribe End -->
 
 
-        <TimeTable/>
+        <TimeTable />
 
 
         <!-- BMI Calculation Start -->
