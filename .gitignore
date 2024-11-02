@@ -59,3 +59,4 @@ temp/
 # Images and assets
 src/web/public/images/
 .expressvue/
+/package-lock.json
