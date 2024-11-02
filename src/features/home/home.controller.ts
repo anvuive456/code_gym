@@ -9,6 +9,7 @@ import { upload } from "@middlewares/upload.middleware";
 import Home from "../../../web/views/user/Home.vue";
 import About from "../../../web/views/user/About.vue";
 import Feature from "../../../web/views/user/Feature.vue";
+import Contact from "../../../web/views/user/Contact.vue";
 
 class HomeController extends BaseController {
     protected getBasePath(): string {
@@ -75,10 +76,7 @@ class HomeController extends BaseController {
     }
 
     private async viewContact(req: Request, res: Response) {
-        return res.render("user/contact", {
-            layout: "layout/user_layout",
-
-        });
+        return this.renderVue(req, res, Contact);
     }
 
     private index(req: Request, res: Response) {

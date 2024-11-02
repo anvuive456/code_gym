@@ -18,7 +18,7 @@ export async function main() {
     app.set("port", port);
 
     app.use(express.static(path.resolve("public")));
-    app.use("/dist/client", express.static(path.resolve(__dirname, "../dist/client")));
+    app.use("/dist/client", express.static(path.resolve("dist","client")));
 
 
     app.use(express.json());
