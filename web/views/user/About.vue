@@ -1,9 +1,10 @@
+    <!--import script -->
 <script setup lang="ts">
 
 import NavBar from "./NavBar.vue";
 import Header from "./Header.vue";
 </script>
-
+ <!-- code html -->
 <template>
     <div>
         <NavBar />
@@ -166,7 +167,7 @@ import Header from "./Header.vue";
     </div>
 
 </template>
-
+<!-- style for this file -->
 <style scoped>
 
 </style>

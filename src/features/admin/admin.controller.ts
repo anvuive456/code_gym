@@ -1,12 +1,10 @@
 import { User } from "@entities/user.entity";
 import { BaseController } from "@interfaces/controller.interface";
-import { Request, Response } from "express";
-import { title } from "process";
-import bcrypt from "bcrypt";
-
+import { Request, Response } from "express"; 
 import { Branch } from "@entities/branch.entity";
 import { FitnessPackage } from "@entities/fitness_package.entity";
-import { Promotion } from "@entities/promotion.entity";
+import { Promotion } from "@entities/promotion.entity";  
+import AdminLogin from "../../../web/views/admin/AdminLogin.vue";
 class AdminController extends BaseController {
     protected getBasePath(): string {
         return "/admin";
@@ -45,7 +43,11 @@ class AdminController extends BaseController {
                 users: [],
             },
         ];
-        return res.render("admin/home_page", { title: "Home Page", branches });
+        
+        await super.renderVue(req, res, AdminLogin);
+        
+
+        // return res.render("admin/home_page", { title: "Home Page", branches });
     }
     private async signOut(req: Request, res: Response) {
         req.session.destroy((err: any) => {
@@ -56,10 +58,11 @@ class AdminController extends BaseController {
     }
 
     private async signInView(req: Request, res: Response) {
-        return res.render("admin/signin", {
-            error: req.query.error,
-            title: "Admin Panel",
-        });
+        // return res.render("admin/signin", {
+        //     error: req.query.error,
+        //     title: "Admin Panel",
+        // });
+        return  super.renderVue(req,res,AdminLogin);
     }
 
     private async signIn(req: Request, res: Response) {

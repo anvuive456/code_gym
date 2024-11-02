@@ -22,6 +22,11 @@ const routes: RouteRecordRaw[] = [
         name: "Feature",
         component: () => import("./views/user/Feature.vue"),
     },
+    {
+        path: "/admin/signin",
+        name: "AdminLogin",
+        component: () => import("./views/admin/AdminLogin.vue"),
+    },
     // Add more routes as needed
 ];
 
