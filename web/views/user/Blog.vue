@@ -1,8 +1,11 @@
 <script setup lang="ts">
 
+import Header from "./Header.vue";
 </script>
 
 <template>
+    <Header/>
+
     <div class="container pt-5">
         <div class="d-flex flex-column text-center mb-5">
             <h4 class="text-primary font-weight-bold">Our Blog</h4>

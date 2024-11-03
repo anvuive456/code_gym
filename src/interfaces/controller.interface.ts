@@ -106,7 +106,6 @@ export abstract class BaseController {
         <!--<script src="mail/contact.js"></script>-->
         
         <!-- Template Javascript -->
-        <script src="http://localhost:3000/js/main.js"></script> 
         <script src="http://localhost:3000/js/admin_main.js"></script>
         <!-- Additional Scripts -->
         ${scripts && scripts}

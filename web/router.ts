@@ -1,4 +1,10 @@
-import { createRouter, createMemoryHistory, createWebHistory, RouteRecordRaw } from "vue-router";
+import {
+    createRouter,
+    createMemoryHistory,
+    createWebHistory,
+    RouteRecordRaw,
+    RouteLocationNormalizedGeneric,
+} from "vue-router";
 
 // Define your routes
 export const routes: RouteRecordRaw[] = [
@@ -42,8 +48,16 @@ export const routes: RouteRecordRaw[] = [
 
 // Export a function to create a new router instance for each request
 export function createRouterInstance() {
+    const _routes: RouteRecordRaw[] = routes.map((value) => {
+        return {
+            ...value,
+            props(to: any) {
+                return window.__INITIAL_PROPS__;
+            },
+        } as RouteRecordRaw;
+    });
     return createRouter({
         history: process.env.SSR ? createMemoryHistory() : createWebHistory(),
-        routes,
+        routes: _routes,
     });
 }
