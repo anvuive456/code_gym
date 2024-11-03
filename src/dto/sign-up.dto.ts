@@ -3,5 +3,6 @@ export  type SignUpDTO = {
     password: string;
     username: string;
     name: string;
+    phone: string;
     gender: "male" | "female";
 }

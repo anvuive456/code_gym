@@ -1,11 +1,13 @@
 <script setup lang="ts">
 
 import Header from "./Header.vue";
+import NavBar from "./NavBar.vue";
 
 
 </script>
 
 <template>
+    <NavBar />
     <Header title="Liên hệ" />
 
     <!-- Contact Start -->

@@ -1,5 +1,6 @@
 const path = require("path");
 const { VueLoaderPlugin } = require("vue-loader");
+const webpack = require("webpack");
 
 module.exports = {
     entry: "./web/entry-client.ts", // Client entry point
@@ -35,6 +36,11 @@ module.exports = {
         ],
     },
     plugins: [
+        new webpack.DefinePlugin({
+            __VUE_PROD_DEVTOOLS__: "true",
+            "__VUE_OPTIONS_API__": "true",
+            __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: "false",
+        }),
         new VueLoaderPlugin(),
     ],
     // optimization: {

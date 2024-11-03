@@ -2,7 +2,13 @@
 import Carousel from "../../components/Carousel.vue";
 import TimeTable from "../../components/TimeTable.vue";
 import NavBar from "./NavBar.vue";
-import { defineComponent } from "vue";
+import { defineComponent, onMounted } from "vue";
+
+
+const props = defineProps<{
+    title: string;
+}>();
+console.log("PROPS", props);
 
 </script>
 
@@ -111,7 +117,6 @@ import { defineComponent } from "vue";
             </div>
         </div>
         <!-- Features End -->
-
 
 
         <!-- GYM Feature Start -->

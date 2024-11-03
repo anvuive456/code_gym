@@ -24,8 +24,11 @@ export class User {
     @Column({ name: "password" })
     password: string;
 
-    @ManyToOne(() => Role, role => role.users)
-    @JoinColumn()
+    @Column({
+        type: "simple-enum",
+        enum: Role,
+        default: Role.user,
+    })
     role: Role;
 
     @OneToOne(() => Profile, profile => profile.user, { onDelete: "CASCADE" })
@@ -37,7 +40,7 @@ export class User {
 
     @BeforeInsert()
     @BeforeUpdate()
-    updatePassword(){
+    updatePassword() {
         this.password = bcrypt.hashSync(this.password, 10);
     }
 }

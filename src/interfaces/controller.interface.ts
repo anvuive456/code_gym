@@ -1,6 +1,6 @@
 import { Router, Request, Response, NextFunction } from "express";
-import { createSSRApp } from "vue";
 import { renderToString } from "@vue/server-renderer";
+import { Component, createSSRApp } from "vue";
 
 export abstract class BaseController {
     public router: Router = Router();
@@ -27,7 +27,7 @@ export abstract class BaseController {
         return res.render(view, data);
     }
 
-    protected async renderVue(req: Request, res: Response, component: any, props?: any, data?: TemplateOptions) {
+    protected async renderVue(req: Request, res: Response, component: Component, props?: any, data?: TemplateOptions) {
         try {
             const ctx = {
                 url: req.url,
@@ -39,11 +39,11 @@ export abstract class BaseController {
             // Send the rendered HTML as a response
 
             const {
-                title,
-                keywords,
-                description,
-                additionalLinks,
-                additionalScripts,
+                title = "",
+                keywords = [],
+                description = "",
+                additionalLinks = [],
+                additionalScripts = [],
             } = data || {
                 title: "CodeGym",
                 keywords: [],
@@ -71,48 +71,51 @@ export abstract class BaseController {
            ${description && `<meta content="${description}" name="description">`} 
         
             <!-- Favicon -->
-            <link href="images/favicon.ico" rel="icon">
+            <link href="http://localhost:3000/images/favicon.ico" rel="icon">
         
             <!-- Font Awesome -->
             <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
         
             <!-- Flaticon Font -->
-            <link href="lib/flaticon/font/flaticon.css" rel="stylesheet">
+            <link href="http://localhost:3000/lib/flaticon/font/flaticon.css" rel="stylesheet">
         
             <!-- Customized Bootstrap Stylesheet -->
-            <link href="css/style.min.css" rel="stylesheet">
+            <link href="http://localhost:3000/css/style.min.css" rel="stylesheet">
 
             <!-- Additional Stylesheets -->
             ${links && links}
         </head>
         
         <body class="bg-white">
+        <div id="app">
          ${html}
+        </div>
         <!-- JavaScript Libraries -->
         <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
-        <script src="/lib/easing/easing.min.js"></script>
-        <script src="/lib/waypoints/waypoints.min.js"></script> 
-        <script src="/lib/chart/chart.min.js"></script>  
-        <script src="/lib/owlcarousel/owl.carousel.min.js"></script>
-        <script src="/lib/tempusdominus/js/moment.min.js"></script>
-        <script src="/lib/tempusdominus/js/moment-timezone.min.js"></script>
-        <script src="/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+        <script src="http://localhost:3000/lib/easing/easing.min.js"></script>
+        <script src="http://localhost:3000/lib/waypoints/waypoints.min.js"></script> 
+        <script src="http://localhost:3000/lib/chart/chart.min.js"></script>  
+        <script src="http://localhost:3000/lib/owlcarousel/owl.carousel.min.js"></script>
+        <script src="http://localhost:3000/lib/tempusdominus/js/moment.min.js"></script>
+        <script src="http://localhost:3000/lib/tempusdominus/js/moment-timezone.min.js"></script>
+        <script src="http://localhost:3000/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
 
-    <!-- Template Javascript -->
-    <script src="js/main.js"></script>
-        
         <!-- Contact Javascript File -->
         <!--<script src="mail/jqBootstrapValidation.min.js"></script>-->
         <!--<script src="mail/contact.js"></script>-->
         
         <!-- Template Javascript -->
-        <script src="/js/main.js"></script> 
-        <script src="/js/admin_main.js"></script>
+        <script src="http://localhost:3000/js/main.js"></script> 
+        <script src="http://localhost:3000/js/admin_main.js"></script>
         <!-- Additional Scripts -->
         ${scripts && scripts}
+        <!-- Add init state to Component -->
+        <script>
+        window.__INITIAL_PROPS__ = ${JSON.stringify(props)}
+        console.log('init props in html',  window.__INITIAL_PROPS__)
+        </script>
         <script src="/dist/client/bundle.client.js"></script>
-        
         </body>
         
         </html>

@@ -1,15 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, JoinColumn } from "typeorm";
-import { User } from './user.entity';
 
-@Entity()
-export class Role {
-    @PrimaryGeneratedColumn()
-    id: number;
-
-    @Column()
-    name: string;
-
-    @OneToMany(() => User, user => user.role)
-
-    users: User[];
+export enum Role {
+    admin='admin',
+    user = 'user',
+    manager = 'manager',
+    personal_trainer = 'personal_trainer',
 }

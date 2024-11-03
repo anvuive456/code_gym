@@ -3,11 +3,13 @@
 
 import NavBar from "./NavBar.vue";
 import Header from "./Header.vue";
+import BackToTopButton from "../../components/BackToTopButton.vue";
 </script>
  <!-- code html -->
 <template>
     <div>
-        <NavBar />
+        <BackToTopButton/>
+        <NavBar/>
         <Header title="Về chúng tôi"/>
 
         <!-- About Start -->

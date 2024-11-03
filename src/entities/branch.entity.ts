@@ -3,7 +3,7 @@ import { User } from "@entities/user.entity";
 import { FitnessPackage } from "@entities/fitness_package.entity";
 import { Promotion } from "@entities/promotion.entity";
 
-@Entity()
+@Entity({name:'branches'})
 export class Branch {
     @PrimaryGeneratedColumn()
     id: number;

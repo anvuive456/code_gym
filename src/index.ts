@@ -3,12 +3,9 @@ import dotenv from "dotenv";
 import Logger from "@config/logger";
 import morganMiddleware from "@middlewares/morgan.middleware";
 import session from "express-session";
-import dbMiddleware from "@middlewares/db.middleware";
 import path from "path";
 import AdminController from "@features/admin/admin.controller";
 import HomeController from "@features/home/home.controller";
-import { createApp } from "../web/entry-server";
-import { renderToString } from "@vue/server-renderer";
 
 export async function main() {
     dotenv.config();
@@ -18,7 +15,7 @@ export async function main() {
     app.set("port", port);
 
     app.use(express.static(path.resolve("public")));
-    app.use("/dist/client", express.static(path.resolve("dist","client")));
+    app.use("/dist/client", express.static(path.resolve("dist", "client")));
 
 
     app.use(express.json());
@@ -44,10 +41,11 @@ export async function main() {
                 secure: false,
                 maxAge: 1000 * 60 * 60 * 24, // Thời gian sống của cookie (1 ngày)
             },
-        })
+        }),
     );
 
     app.use(morganMiddleware);
+    const { default: dbMiddleware } = await import("@middlewares/db.middleware");
     app.use(dbMiddleware);
 
 

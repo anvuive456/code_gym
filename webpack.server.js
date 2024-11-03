@@ -8,7 +8,7 @@ const webpack = require("webpack");
 module.exports = merge(common, {
     entry: {
         // app: "./web/entry-server.ts",
-        index:"./src/index.ts",
+        index: "./src/index.ts",
     },
     target: "node",
     externals: [nodeExternals({
@@ -20,11 +20,11 @@ module.exports = merge(common, {
         publicPath: "/dist/server/",
         libraryTarget: "commonjs2",
     },
-    devtool: 'source-map',
+    devtool: "source-map",
     plugins: [
         new webpack.DefinePlugin({
             "process.env.SSR": "true",  // Define SSR as true for server-side
         }),
     ],
-    mode: "production",
+    mode: "development",
 });

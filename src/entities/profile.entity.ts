@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToOne } from "typeorm";
 import { User } from "@entities/user.entity";
 
-@Entity()
+@Entity({ name: "profiles" })
 export class Profile {
     @PrimaryGeneratedColumn()
     id: number;
@@ -14,6 +14,9 @@ export class Profile {
 
     @Column()
     phone: string;
+
+    @Column()
+    email: string;
 
     @Column()
     photo: string;

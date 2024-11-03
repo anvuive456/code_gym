@@ -1,9 +1,14 @@
 <script setup lang="ts">
 
 import Header from "./Header.vue";
+import NavBar from "./NavBar.vue";
+import Footer from "./Footer.vue";
+
+
 </script>
 
 <template>
+    <NavBar />
     <Header title="Our Features"/>
     <!-- GYM Feature Start -->
     <div class="container feature pt-5">
@@ -144,6 +149,7 @@ import Header from "./Header.vue";
         </div>
     </div>
     <!-- Testimonial End -->
+    <Footer/>
 
 </template>
 

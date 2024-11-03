@@ -1,9 +1,9 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable } from "typeorm";
 import { FitnessPackage } from "@entities/fitness_package.entity";
 import { Branch } from "@entities/branch.entity";
 
 
-@Entity()
+@Entity({ name: "promotions" })
 export class Promotion {
     @PrimaryGeneratedColumn()
     id: number;
@@ -11,16 +11,16 @@ export class Promotion {
     @Column()
     name: string;
 
-    @Column('text')
+    @Column("text")
     description: string;
 
     @Column()
     discountPercentage: number;
 
-    @Column('date')
+    @Column("date")
     startDate: Date;
 
-    @Column('date')
+    @Column("date")
     endDate: Date;
 
     // Quan hệ với chi nhánh

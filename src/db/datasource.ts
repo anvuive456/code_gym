@@ -14,7 +14,7 @@ const MysqlDataSource = () => {
         username: process.env.DB_USERNAME,
         password: process.env.DB_PASSWORD,
         database: process.env.DB_NAME,
-        entities: [User, Role, Branch, FitnessPackage, Profile, Promotion],
+        entities: [User, Branch, FitnessPackage, Profile, Promotion],
         logging: false,
         synchronize: true,
     });

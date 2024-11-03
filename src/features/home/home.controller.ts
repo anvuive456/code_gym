@@ -10,6 +10,9 @@ import Home from "../../../web/views/user/Home.vue";
 import About from "../../../web/views/user/About.vue";
 import Feature from "../../../web/views/user/Feature.vue";
 import Contact from "../../../web/views/user/Contact.vue";
+import SignUp from "../../../web/views/user/SignUp.vue";
+import Blog from "../../../web/views/user/Blog.vue";
+import Branch from "../../../web/views/user/Branch.vue";
 
 class HomeController extends BaseController {
     protected getBasePath(): string {
@@ -49,11 +52,21 @@ class HomeController extends BaseController {
 
     private async viewHome(req: Request, res: Response): Promise<void> {
         const db = req.db;
-        await super.renderVue(req, res, Home);
+        await super.renderVue(req, res, Home, {
+            title: "Muahahahah",
+        }, {
+            title: "Trang chủ",
+        });
     }
 
     private async viewAbout(req: Request, res: Response): Promise<void> {
-        return super.renderVue(req, res, About);
+        return super.renderVue(req, res, About, {
+            branches: [{
+                name: "hello world",
+            }],
+        }, {
+            title: "Về chúng tôi",
+        });
     }
 
     private async viewFeature(req: Request, res: Response) {
@@ -62,21 +75,25 @@ class HomeController extends BaseController {
     }
 
     private async viewBlog(req: Request, res: Response) {
-        return res.render("user/blog", {
-            layout: "layout/user_layout",
-
-        });
+        return super.renderVue(req, res, Blog, {});
     }
 
     private async viewBranch(req: Request, res: Response) {
-        return res.render("user/branch", {
-            layout: "layout/user_layout",
-
+        const branches = [
+            {
+                title: "Hello world",
+            },
+            {
+                title: "Hello bitch",
+            },
+        ];
+        return super.renderVue(req, res, Branch, {
+            branches,
         });
     }
 
     private async viewContact(req: Request, res: Response) {
-        return this.renderVue(req, res, Contact);
+        return super.renderVue(req, res, Contact);
     }
 
     private index(req: Request, res: Response) {
@@ -84,9 +101,7 @@ class HomeController extends BaseController {
     }
 
     private viewSignUp(req: Request, res: Response) {
-        return res.render("user/signup", {
-            layout: "layout/user_layout",
-        });
+        return super.renderVue(req, res, SignUp);
     }
 
     private viewSignIn(req: Request, res: Response) {
@@ -97,25 +112,19 @@ class HomeController extends BaseController {
 
     private async signUp(req: Request<{}, {}, SignUpDTO>, res: Response) {
         const db = req.db;
-        const { username, password, email, name, gender } = req.body;
+        const { username, password, email, phone, name, gender } = req.body;
 
-        let role = await db.getRepository(Role).findOne({ where: { name: "Người dùng" } });
-        if (!role) {
-            role = new Role();
-            role.name = "Người dùng";
-            await db.getRepository(Role).save(role);
-        }
         // Create a profile for the user
         const profile = new Profile();
         profile.name = name;
         profile.gender = gender;
         profile.photo = "";
+        profile.phone = phone;
         await db.getRepository(Profile).save(profile); // Save profile first for the one-to-one relation
         // Create a new user and set properties
         const user = new User();
         user.username = username;
         user.password = password; // Password will be hashed by the @BeforeInsert hook
-        user.role = role;
         user.profile = profile;
 
         // Save the user
@@ -124,7 +133,7 @@ class HomeController extends BaseController {
         req.session.user = {
             id: result.id,
             username: result.username,
-            role: result.role.name,
+            role: result.role,
         };
 
         return res.redirect("/home?message=Đăng ký thành công");

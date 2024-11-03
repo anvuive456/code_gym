@@ -21,7 +21,7 @@ import Header from "./Header.vue";
             </a>
             <div class="d-flex align-items-center ms-4 mb-4">
                 <div class="position-relative">
-                    <img class="rounded-circle" src="images/user.jpg" alt="" style="width: 40px; height: 40px;">
+                    <img class="rounded-circle" src="/images/user.jpg" alt="" style="width: 40px; height: 40px;">
                     <div class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1"></div>
                 </div>
                 <div class="ms-3">
@@ -140,7 +140,7 @@ import Header from "./Header.vue";
                 </div> -->
                 <div class="nav-item dropdown">
                     <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                        <img class="rounded-circle me-lg-2" src="images/user.jpg" alt="" style="width: 40px; height: 40px;">
+                        <img class="rounded-circle me-lg-2" src="/images/user.jpg" alt="" style="width: 40px; height: 40px;">
                         <span class="d-none d-lg-inline-flex">John Doe</span>
                     </a>
                     <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
@@ -157,9 +157,9 @@ import Header from "./Header.vue";
         <!-- 404 Start -->
         <div class="container-fluid pt-4 px-4">
             <div class="row vh-100 bg-light rounded align-items-center justify-content-center mx-0">
-                         <div class="bg-light rounded h-100 p-4"> 
-                            <h6 class="mb-4">Danh sách chi nhánh</h6> 
-                            <button type="submit" class="btn btn-primary">Thêm mới</button> 
+                         <div class="bg-light rounded h-100 p-4">
+                            <h6 class="mb-4">Danh sách chi nhánh</h6>
+                            <button type="submit" class="btn btn-primary">Thêm mới</button>
                             <table class="table" style="margin-top: 20px;">
                                 <thead>
                                     <tr>
@@ -167,7 +167,7 @@ import Header from "./Header.vue";
                                         <th scope="col">Tên chi nhánh</th>
                                         <th scope="col">Địa chỉ</th>
                                         <th scope="col">Action</th>
-                                        
+
                                     </tr>
                                 </thead>
                                 <!-- <tbody>
@@ -188,7 +188,7 @@ import Header from "./Header.vue";
                                             <td colspan="4">Không có dữ liệu để hiển thị.</td>
                                         </tr>
                                     <% } %>
-                                    
+
                                 </tbody> -->
                             </table>
                         </div>
@@ -212,7 +212,7 @@ import Header from "./Header.vue";
                     <div class="col-12 col-sm-6 text-center text-sm-start">
                         &copy; <a href="#">Your Site Name</a>, All Right Reserved.
                     </div>
-                    <div class="col-12 col-sm-6 text-center text-sm-end"> 
+                    <div class="col-12 col-sm-6 text-center text-sm-end">
                         <!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->
                         Designed By <a href="https://htmlcodex.com">HTML Codex</a>
                     </div>
@@ -221,10 +221,10 @@ import Header from "./Header.vue";
         </div>
         <!-- Footer End -->
     </div>
-    <!-- Content End --> 
+    <!-- Content End -->
     <!-- Back to Top -->
     <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
-</div> 
+</div>
 </template>
 <style scoped>
 </style>

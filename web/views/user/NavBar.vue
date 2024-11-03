@@ -1,23 +1,58 @@
-<script>
-export default {
-    name: "NavBar",
-    data() {
-        return {
-            active: '/home', // Giá trị này sẽ được cập nhật dựa trên route hiện tại
-            userFullName: null, // Đặt tên người dùng, hoặc đặt null nếu chưa đăng nhập
+<script lang="ts">
+import { defineComponent, onMounted, onBeforeUnmount } from 'vue';
+
+export default defineComponent({
+    name: 'NavBar',
+    setup() {
+        const toggleNavbarMethod = () => {
+            if (window.innerWidth > 992) {
+                const dropdowns = document.querySelectorAll('.navbar .dropdown');
+
+                dropdowns.forEach((dropdown) => {
+                    dropdown.addEventListener('mouseover', handleMouseOver);
+                    dropdown.addEventListener('mouseout', handleMouseOut);
+                });
+            } else {
+                removeDropdownListeners();
+            }
         };
+
+        const handleMouseOver = (event: Event) => {
+            const target = event.currentTarget as HTMLElement;
+            const dropdownToggle = target.querySelector('.dropdown-toggle') as HTMLElement;
+            dropdownToggle?.click();
+        };
+
+        const handleMouseOut = (event: Event) => {
+            const target = event.currentTarget as HTMLElement;
+            const dropdownToggle = target.querySelector('.dropdown-toggle') as HTMLElement;
+            dropdownToggle?.click();
+            dropdownToggle?.blur();
+        };
+
+        const removeDropdownListeners = () => {
+            const dropdowns = document.querySelectorAll('.navbar .dropdown');
+            dropdowns.forEach((dropdown) => {
+                dropdown.removeEventListener('mouseover', handleMouseOver);
+                dropdown.removeEventListener('mouseout', handleMouseOut);
+            });
+        };
+
+        onMounted(() => {
+            toggleNavbarMethod();
+            window.addEventListener('resize', toggleNavbarMethod);
+        });
+
+        onBeforeUnmount(() => {
+            removeDropdownListeners();
+            window.removeEventListener('resize', toggleNavbarMethod);
+        });
+
+        return {};
     },
-    methods: {
-        isActive(route) {
-           return this.active.startsWith(route);
-        }
-    },
-    mounted() {
-        // Kiểm tra thông tin đăng nhập hoặc cập nhật userFullName nếu có thể
-        // this.userFullName = 'Tên Người Dùng';
-    }
-};
+});
 </script>
+
 <template>
     <!-- Navbar Start -->
     <div class="container-fluid p-0 nav-bar">
@@ -30,21 +65,25 @@ export default {
             </button>
             <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
                 <div class="navbar-nav ml-auto p-4 bg-secondary">
-                    <a href="/home" class="nav-item nav-link" :class="{ active: isActive('/home') }">Trang chủ</a>
-                    <a href="/about" class="nav-item nav-link" :class="{ active: isActive('/about') }">Giới thiệu</a>
-                    <a href="/feature" class="nav-item nav-link" :class="{ active: isActive('/feature') }">Our Features</a>
-                    <a href="/branch" class="nav-item nav-link" :class="{ active: isActive('/branch') }">Chi nhánh</a>
-                    <a href="/contact" class="nav-item nav-link" :class="{ active: isActive('/contact') }">Contact</a>
+                    <a href="/home" class="nav-item nav-link">Trang chủ</a>
+                    <a href="/about" class="nav-item nav-link" >Giới thiệu</a>
+                    <a href="/feature" class="nav-item nav-link" >Our
+                        Features</a>
+                    <a href="/branch" class="nav-item nav-link" >Chi nhánh</a>
+                    <a href="/contact" class="nav-item nav-link" >Contact</a>
 
                     <template v-if="userFullName">
                         <div class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" id="profileDropdown" role="button" data-toggle="dropdown">
+                            <a class="nav-link dropdown-toggle" id="profileDropdown" role="button"
+                               data-toggle="dropdown">
                                 Xin chào, {{ userFullName }}
                             </a>
                             <ul class="dropdown-menu text-capitalize" aria-labelledby="profileDropdown">
                                 <li><a class="dropdown-item" href="/profile">Hồ sơ</a></li>
                                 <li><a class="dropdown-item" href="/schedule">Lịch trình</a></li>
-                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
                                 <li><a class="dropdown-item text-primary" href="/signout">Đăng xuất</a></li>
                             </ul>
                         </div>
