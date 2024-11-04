@@ -44,9 +44,7 @@ class AdminController extends BaseController {
             },
         ];
         
-        await super.renderVue(req, res, AdminLogin);
-        
-
+        await super.renderVue(req, res, AdminLogin,{br:branches}); 
         // return res.render("admin/home_page", { title: "Home Page", branches });
     }
     private async signOut(req: Request, res: Response) {

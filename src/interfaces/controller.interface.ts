@@ -77,7 +77,7 @@ export abstract class BaseController {
             <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
         
             <!-- Flaticon Font -->
-            <link href="http://localhost:3000/lib/flaticon/font/flaticon.css" rel="stylesheet">
+            <link href=""http://localhost:3000/lib/flaticon/font/flaticon.css" rel="stylesheet">
         
             <!-- Customized Bootstrap Stylesheet -->
             <link href="http://localhost:3000/css/style.min.css" rel="stylesheet">
@@ -100,12 +100,13 @@ export abstract class BaseController {
         <script src="http://localhost:3000/lib/tempusdominus/js/moment.min.js"></script>
         <script src="http://localhost:3000/lib/tempusdominus/js/moment-timezone.min.js"></script>
         <script src="http://localhost:3000/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
-
+        
         <!-- Contact Javascript File -->
         <!--<script src="mail/jqBootstrapValidation.min.js"></script>-->
         <!--<script src="mail/contact.js"></script>-->
         
         <!-- Template Javascript -->
+        <script src="http://localhost:3000/js/main.js"></script> 
         <script src="http://localhost:3000/js/admin_main.js"></script>
         <!-- Additional Scripts -->
         ${scripts && scripts}
