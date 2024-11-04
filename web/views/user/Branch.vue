@@ -7,6 +7,11 @@ import Footer from "./Footer.vue";
 
 export default defineComponent({
     name: "Branch",
+    data: function (){
+        return {
+            cc: [] as string[]
+        };
+    },
     props: {
         branches: {
             type: Array,
@@ -17,6 +22,16 @@ export default defineComponent({
         console.log(props.branches);
     },
     components: { Footer, Header, NavBar },
+    methods: {
+        getBranchs: function (){
+           return [
+            'hello world','cc cc 2 cc1'
+           ]
+        }
+    },
+    beforeMount: function (){
+        this.cc = this.getBranchs();
+    }
 });
 </script>
 
@@ -76,6 +91,9 @@ export default defineComponent({
         </div>
     </div>
     <!-- BMI Calculation End -->
+
+
+    <div v-for="item in cc" :key="item">{{item}}</div>
 
     <Footer />
 </template>

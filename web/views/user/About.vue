@@ -4,6 +4,15 @@
 import NavBar from "./NavBar.vue";
 import Header from "./Header.vue";
 import BackToTopButton from "../../components/BackToTopButton.vue";
+
+type Branch = {
+    name: string
+}
+
+defineProps<{
+    branches: Branch[]
+}>()
+
 </script>
  <!-- code html -->
 <template>
@@ -166,6 +175,9 @@ import BackToTopButton from "../../components/BackToTopButton.vue";
             </div>
         </div>
         <!-- Team End -->
+
+
+    <div v-for="item in branches" :key="item">{{item.name}}</div>
     </div>
 
 </template>

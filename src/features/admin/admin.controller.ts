@@ -12,8 +12,8 @@ class AdminController extends BaseController {
 
     protected initRoutes(): void {
         this.router.get(`${this.getBasePath()}/signin`, this.signInView);
-        // this.router.post(`${this.getBasePath()}/signin`,(req)=>{}, this.signIn);
         this.router.post(`${this.getBasePath()}/signin`, this.signIn);
+        // this.router.post(`${this.getBasePath()}/signin`,(req)=>{}, this.signIn);
         this.router.get(`${this.getBasePath()}/`, this.viewHomePage);
     }
     private async viewHomePage(req: Request, res: Response) {
