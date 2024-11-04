@@ -2,9 +2,9 @@
     <canvas id="worldwide-sales"></canvas>
   </template>
   
-  <script>
   import { Bar } from 'chart.js';
   
+  <script>
   export default {
     mounted() {
       const ctx = document.getElementById('worldwide-sales').getContext('2d');
