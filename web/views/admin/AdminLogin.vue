@@ -5,20 +5,59 @@ import Header from "./Header.vue";
 import BackToTopButton from '../../components/admin/BackToTopButton.vue';
 import Spinner from '../../components/admin/Spinner.vue';
 
+import { ref, defineProps, defineEmits, onBeforeMount } from "vue";
+  // Importing props
+  //Thay vì khai báo props trong export default defineComponent(),
+  // chúng ta sử dụng defineProps để khai báo các props trong <script setup>.
+const props = defineProps({
+  branches: {
+    type: Array as () => string[],
+    required: true,
+  },
+});
 
-type Branch = {
-    name: string
-}
+// Declare reactive state using `ref`//Thay vì dùng data() để khai báo trạng thái, ta sử dụng ref
+//cc được khai báo là một mảng chuỗi (ref<string[]>([])).
+const cc = ref<ChiNhanh[]>([]);
 
-// defineProps<{
-//     br:Branch[]
-// }>()
-// ({
-//     branches:Branch[]
-// })
+// Method to get branches (returning sample data)
+// Được khai báo trực tiếp trong phần setup như một hàm bình thường, trả về mảng các chuỗi.
+interface ChiNhanh {
+  name: string;
+  address: string;
+  action: null | string; 
+} 
+const getBranchs = (): ChiNhanh[] => {
+  return [
+    { name: "Chi nhánh A", address: "Địa chỉ A", action: null },
+    { name: "Chi nhánh B", address: "Địa chỉ B", action: null },
+    { name: "Chi nhánh C", address: "Địa chỉ C", action: null },];
+};
+// Hàm để xử lý khi nhấn nút Xóa
+const deleteBranch = (index: number) => {
+  cc.value.splice(index, 1);
+  console.log("Xóa chi nhánh ở vị trí:", index);
+};
 
-</script>
+// Hàm để xử lý khi nhấn nút Sửa
+const editBranch = (index: number) => {
+  const branch = cc.value[index];
+  console.log("Chỉnh sửa chi nhánh:", branch);
+  // Thêm logic chỉnh sửa tại đây
+};
+// Lifecycle hook before the component is mounted
+// Dùng hook onBeforeMount thay cho beforeMount trong methods. 
+// Cái này được sử dụng để gọi phương thức getBranchs khi component chuẩn bị mount.
 
+// Sử dụng `onMounted` để lấy dữ liệu khi component được mount
+onBeforeMount(() => {
+  cc.value = getBranchs();
+});
+// Logging props (just for demonstration)
+// Bạn có thể thực hiện bất kỳ hành động nào với các props ngay trong setup function.?
+console.log(props.branches);
+
+</script> 
 <template>
     <BackToTopButton/> 
   <div class="container-xxl position-relative bg-white d-flex p-0">
@@ -40,6 +79,7 @@ type Branch = {
             <a href="index.html" class="navbar-brand mx-4 mb-3">
                 <h3 class="text-primary"><i class="fa fa-hashtag me-2"></i>ADMIN</h3>
             </a>
+            
             <div class="d-flex align-items-center ms-4 mb-4">
                 <div class="position-relative">
                     <img class="rounded-circle" src="http://localhost:3000/images/user.jpg" alt="" style="width: 40px; height: 40px;">
@@ -52,30 +92,11 @@ type Branch = {
             </div>
             <div class="navbar-nav w-100">
                 <a href="http://localhost:3000//admin/signin" class="nav-item nav-link"><i class="fa fa-tachometer-alt me-2"></i>Chi nhánh</a>
-                <!-- <div class="nav-item dropdown">
-                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="fa fa-laptop me-2"></i>Elements</a>
-                    <div class="dropdown-menu bg-transparent border-0">
-                        <a href="button.html" class="dropdown-item">Buttons</a>
-                        <a href="typography.html" class="dropdown-item">Typography</a>
-                        <a href="element.html" class="dropdown-item">Other Elements</a>
-                    </div>
-                </div> -->
-                <a href="widget.html" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Học viên</a>
+               
+                <a href="/admin/signin" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Học viên</a>
                 <a href="widget.html" class="nav-item nav-link"><i class="fa fa-keyboard me-2"></i>Báo cáo</a>
                 <a href="widget.html" class="nav-item nav-link"><i class="fa fa-keyboard me-2"></i>Gói tập</a>
-                <!-- <a href="widget.html" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Widgets</a> -->
-                <!-- <a href="form.html" class="nav-item nav-link"><i class="fa fa-keyboard me-2"></i>Forms</a>
-                <a href="table.html" class="nav-item nav-link"><i class="fa fa-table me-2"></i>Tables</a>
-                <a href="chart.html" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>Charts</a> -->
-                <!-- <div class="nav-item dropdown">
-                    <a href="#" class="nav-link dropdown-toggle active" data-bs-toggle="dropdown"><i class="far fa-file-alt me-2"></i>Pages</a>
-                    <div class="dropdown-menu bg-transparent border-0">
-                        <a href="signin.html" class="dropdown-item">Sign In</a>
-                        <a href="signup.html" class="dropdown-item">Sign Up</a>
-                        <a href="404.html" class="dropdown-item active">404 Error</a>
-                        <a href="blank.html" class="dropdown-item">Blank Page</a>
-                    </div>
-                </div> -->
+                
             </div>
         </nav>
     </div>
@@ -96,70 +117,7 @@ type Branch = {
                 <input class="form-control border-0" type="search" placeholder="Search">
             </form>
             <div class="navbar-nav align-items-center ms-auto">
-                <!-- <div class="nav-item dropdown">
-                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                        <i class="fa fa-envelope me-lg-2"></i>
-                        <span class="d-none d-lg-inline-flex">Message</span>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
-                        <a href="#" class="dropdown-item">
-                            <div class="d-flex align-items-center">
-                                <img class="rounded-circle" src="images/user.jpg" alt="" style="width: 40px; height: 40px;">
-                                <div class="ms-2">
-                                    <h6 class="fw-normal mb-0">Jhon send you a message</h6>
-                                    <small>15 minutes ago</small>
-                                </div>
-                            </div>
-                        </a>
-                        <hr class="dropdown-divider">
-                        <a href="#" class="dropdown-item">
-                            <div class="d-flex align-items-center">
-                                <img class="rounded-circle" src="images/user.jpg" alt="" style="width: 40px; height: 40px;">
-                                <div class="ms-2">
-                                    <h6 class="fw-normal mb-0">Jhon send you a message</h6>
-                                    <small>15 minutes ago</small>
-                                </div>
-                            </div>
-                        </a>
-                        <hr class="dropdown-divider">
-                        <a href="#" class="dropdown-item">
-                            <div class="d-flex align-items-center">
-                                <img class="rounded-circle" src="images/user.jpg" alt="" style="width: 40px; height: 40px;">
-                                <div class="ms-2">
-                                    <h6 class="fw-normal mb-0">Jhon send you a message</h6>
-                                    <small>15 minutes ago</small>
-                                </div>
-                            </div>
-                        </a>
-                        <hr class="dropdown-divider">
-                        <a href="#" class="dropdown-item text-center">See all message</a>
-                    </div>
-                </div>
-                <div class="nav-item dropdown">
-                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                        <i class="fa fa-bell me-lg-2"></i>
-                        <span class="d-none d-lg-inline-flex">Notificatin</span>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
-                        <a href="#" class="dropdown-item">
-                            <h6 class="fw-normal mb-0">Profile updated</h6>
-                            <small>15 minutes ago</small>
-                        </a>
-                        <hr class="dropdown-divider">
-                        <a href="#" class="dropdown-item">
-                            <h6 class="fw-normal mb-0">New user added</h6>
-                            <small>15 minutes ago</small>
-                        </a>
-                        <hr class="dropdown-divider">
-                        <a href="#" class="dropdown-item">
-                            <h6 class="fw-normal mb-0">Password changed</h6>
-                            <small>15 minutes ago</small>
-                        </a>
-                        <hr class="dropdown-divider">
-                        <a href="#" class="dropdown-item text-center">See all notifications</a>
-                    </div>
-                </div> -->
-                <div class="nav-item dropdown">
+          <div class="nav-item dropdown">
                     <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
                         <img class="rounded-circle me-lg-2" src="http://localhost:3000/images/user.jpg" alt="" style="width: 40px; height: 40px;">
                         <span class="d-none d-lg-inline-flex">John Doe</span>
@@ -176,41 +134,33 @@ type Branch = {
 
 
         <!-- 404 Start -->
-        <div class="container-fluid pt-4 px-4">
+        <div class="container-fluid pt-4 px-4 ">
             <div class="row vh-100 bg-light rounded align-items-center justify-content-center mx-0">
                          <div class="bg-light rounded h-100 p-4">
                             <h6 class="mb-4">Danh sách chi nhánh</h6>
-                            <button type="submit" class="btn btn-primary">Thêm mới</button>
+                            <button type="submit" class="btn btn-primary btn-sm rounded">Thêm mới</button>
                             <table class="table" style="margin-top: 20px;">
                                 <thead>
                                     <tr>
                                         <th scope="col">#</th>
                                         <th scope="col">Tên chi nhánh</th>
                                         <th scope="col">Địa chỉ</th>
-                                        <th scope="col">Action</th>
-
+                                        <th scope="col">Action</th> 
                                     </tr>
-                                </thead>
-                                <!-- <tbody>
-                                    <% if (branches) { %>
-                                        <% branches.forEach(branch => { %>
-                                            <tr>
-                                                <th scope="row"><%= branch.id %></th>
-                                                <td><%= branch.name %></td>
-                                                <td><%= branch.address %></td>
-                                                <td>
-                                                    <button type="button" class="btn btn-primary">Sửa</button>
-                                                    <button type="button" class="btn btn-primary-update">Xoá</button>
-                                                </td>
-                                            </tr>
-                                        <% }); %>
-                                    <% } else { %>
-                                        <tr>
-                                            <td colspan="4">Không có dữ liệu để hiển thị.</td>
-                                        </tr>
-                                    <% } %>
-
-                                </tbody> -->
+                                </thead> <tbody>
+                            <tr v-for="(branch, index) in cc" :key="index">
+                                <th scope="row">{{ index + 1 }}</th>
+                                <td>{{ branch.name }}</td>
+                                <td>{{ branch.address }}</td>
+                                
+                                <td>
+            <!-- Nút Sửa -->
+            <button class="btn btn-sm btn-warning mr-2 btn-sm rounded" @click="editBranch(index)">Sửa</button>
+            <!-- Nút Xóa -->
+            <button class="btn btn-sm btn-danger btn-sm rounded" @click="deleteBranch(index)">Xóa</button>
+          </td>
+                            </tr>
+        </tbody> 
                             </table>
                         </div>
                 <!-- <div class="col-md-6 text-center p-4">

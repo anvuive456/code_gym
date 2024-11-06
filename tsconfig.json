@@ -1,14 +1,17 @@
 {
-  "compilerOptions": {
+  "compilerOptions": { 
     "strictPropertyInitialization": false,
     "target": "ES2016",
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-    "outDir": "./dist",
+    "emitDecoratorMetadata": true, 
+    "outDir": "./dist", 
     "module": "commonjs",
     "moduleResolution": "node",
     "baseUrl": "./",
     "paths": {
+      "@/*": [
+        "./*",
+       ],
       "@services/*": [
         "src/services/*"
       ],

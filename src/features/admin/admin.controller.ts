@@ -1,10 +1,12 @@
 import { User } from "@entities/user.entity";
 import { BaseController } from "@interfaces/controller.interface";
-import { Request, Response } from "express"; 
+import { Request, Response } from "express";
 import { Branch } from "@entities/branch.entity";
 import { FitnessPackage } from "@entities/fitness_package.entity";
-import { Promotion } from "@entities/promotion.entity";  
+import { Promotion } from "@entities/promotion.entity";
 import AdminLogin from "../../../web/views/admin/AdminLogin.vue";
+import bcrypt from "bcrypt";
+
 class AdminController extends BaseController {
     protected getBasePath(): string {
         return "/admin";
@@ -43,8 +45,8 @@ class AdminController extends BaseController {
                 users: [],
             },
         ];
-        
-        await super.renderVue(req, res, AdminLogin,{br:branches}); 
+
+        await super.renderVue(req, res, AdminLogin, { br: branches });
         // return res.render("admin/home_page", { title: "Home Page", branches });
     }
     private async signOut(req: Request, res: Response) {
@@ -60,7 +62,15 @@ class AdminController extends BaseController {
         //     error: req.query.error,
         //     title: "Admin Panel",
         // });
-        return  super.renderVue(req,res,AdminLogin);
+        const branches = [
+            {
+                title: "Hello world",
+            },
+            {
+                title: "Hello world2",
+            },
+        ];
+        return super.renderVue(req, res, AdminLogin, { branches });
     }
 
     private async signIn(req: Request, res: Response) {
@@ -70,9 +80,9 @@ class AdminController extends BaseController {
         const user = await db.getRepository(User).findOneBy({
             username,
         });
-        // if (!user || !await bcrypt.compare(password, user.password)){
-        //     return res.redirect("/admin/signin?error=Invalid credentials");
-        // }
+        if (!user || !(await bcrypt.compare(password, user.password))) {
+            return res.redirect("/admin/signin?error=Invalid credentials");
+        }
         if (user) {
             req.session.user = {
                 id: user.id,

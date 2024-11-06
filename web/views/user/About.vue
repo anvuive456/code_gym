@@ -11,7 +11,7 @@ type Branch = {
 
 defineProps<{
     branches: Branch[]
-}>()
+}>() 
 
 </script>
  <!-- code html -->
@@ -177,7 +177,7 @@ defineProps<{
         <!-- Team End -->
 
 
-    <div v-for="item in branches" :key="item">{{item.name}}</div>
+    <div v-for="item in branches" :key="item.name">{{item.name}}</div>
     </div>
 
 </template>

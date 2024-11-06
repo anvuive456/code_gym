@@ -27,7 +27,13 @@ export abstract class BaseController {
         return res.render(view, data);
     }
 
-    protected async renderVue(req: Request, res: Response, component: Component, props?: any, data?: TemplateOptions) {
+    protected async renderVue(
+        req: Request,
+        res: Response,
+        component: Component,
+        props?: any,
+        data?: TemplateOptions,
+    ) {
         try {
             const ctx = {
                 url: req.url,
@@ -53,13 +59,20 @@ export abstract class BaseController {
             };
 
             // Generate additional link tags
-            const links = additionalLinks && additionalLinks.map(link => `<link href="${link}" rel="stylesheet">`).join("\n");
+            const links =
+                additionalLinks &&
+                additionalLinks
+                    .map(link => `<link href="${link}" rel="stylesheet">`)
+                    .join("\n");
 
             // Generate additional script tags
-            const scripts = additionalScripts && additionalScripts.map(script => `<script src="${script}"></script>`).join("\n");
+            const scripts =
+                additionalScripts &&
+                additionalScripts
+                    .map(script => `<script src="${script}"></script>`)
+                    .join("\n");
 
-            const t =
-                `
+            const t = `
         <!DOCTYPE html>
         <html lang="en">
 
@@ -142,4 +155,3 @@ interface TemplateOptions {
     additionalLinks?: string[];
     additionalScripts?: string[];
 }
-

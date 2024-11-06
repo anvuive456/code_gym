@@ -1,10 +1,11 @@
 <script lang="ts">
-import { defineComponent } from "vue";
+ import { defineComponent } from "vue";
+// import Header from "./Header.vue";
 import Header from "./Header.vue";
 import NavBar from "./NavBar.vue";
 import Footer from "./Footer.vue";
 
-
+//call api 
 export default defineComponent({
     name: "Branch",
     data: function (){

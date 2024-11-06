@@ -9,7 +9,12 @@
         "dev": "concurrently \"npm run build:client\"  \"npm run build:server\"  \"node dist/server/bundle.server.js\"",
         "test": "echo \"Error: no test specified\" && exit 1",
         "build:client": "webpack --config webpack.client.js --watch",
-        "build:server": "webpack --config webpack.server.js --watch"
+        "build:server": "webpack --config webpack.server.js --watch",
+        "typeorm-seeding": "ts-node -r tsconfig-paths/register ./node_modules/typeorm-seeding/dist/cli.js",
+        "seed:config": "ts-node  -r tsconfig-paths/register ./node_modules/typeorm-seeding/dist/cli.js config",
+        "seed:run": "ts-node -r tsconfig-paths/register ./node_modules/typeorm-seeding/dist/cli.js seed",
+        "schema:drop": "ts-node ./node_modules/typeorm/cli.js schema:drop",
+        "schema:sync": "ts-node ./node_modules/typeorm/cli.js schema:sync"
     },
     "keywords": [],
     "author": "",
@@ -33,6 +38,7 @@
         "ts-loader": "^9.5.1",
         "tsconfig-paths": "^4.2.0",
         "typeorm": "^0.3.20",
+        "typeorm-seeding": "^1.6.1",
         "vue": "^3.5.12",
         "vue-router": "^4.4.5",
         "vuex": "^4.1.0",
@@ -42,6 +48,7 @@
         "winston": "^3.15.0"
     },
     "devDependencies": {
+        "@faker-js/faker": "^9.2.0",
         "@types/bcrypt": "^5.0.2",
         "@types/express": "^5.0.0",
         "@types/express-ejs-layouts": "^2.5.4",
@@ -49,6 +56,7 @@
         "@types/express-session": "^1.18.0",
         "@types/multer": "^1.4.12",
         "@types/node": "^22.7.9",
+        "@types/vue": "^2.0.0",
         "@types/webpack-node-externals": "^3.0.4",
         "concurrently": "^9.0.1",
         "css-loader": "^7.1.2",

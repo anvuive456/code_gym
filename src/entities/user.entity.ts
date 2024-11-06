@@ -24,13 +24,17 @@ export class User {
     @Column({ name: "password" })
     password: string;
 
+    // @Column({
+    //     type: "simple-enum",
+    //     enum: Role,
+    //     default: Role.user,
+    // })
     @Column({
         type: "simple-enum",
         enum: Role,
-        default: Role.user,
+        default: Role.user, // Đặt giá trị mặc định nếu cần
     })
     role: Role;
-
     @OneToOne(() => Profile, profile => profile.user, { onDelete: "CASCADE" })
     @JoinColumn()
     profile: Profile;

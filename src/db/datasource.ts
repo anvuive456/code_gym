@@ -1,4 +1,4 @@
-import { DataSource } from "typeorm";
+import { DataSource, DataSourceOptions } from "typeorm";
 import { User } from "@entities/user.entity";
 import { Role } from "@entities/role.entity";
 import { Branch } from "@entities/branch.entity";
