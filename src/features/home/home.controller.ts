@@ -13,6 +13,8 @@ import Contact from "../../../web/views/user/Contact.vue";
 import SignUp from "../../../web/views/user/SignUp.vue";
 import Blog from "../../../web/views/user/Blog.vue";
 import Branch from "../../../web/views/user/Branch.vue";
+import SignIn from "../../../web/views/user/SignIn.vue";
+import bcrypt from "bcrypt";
 
 class HomeController extends BaseController {
     protected getBasePath(): string {
@@ -44,6 +46,7 @@ class HomeController extends BaseController {
         this.router.get(`${this.getBasePath()}/signup`, this.viewSignUp);
         this.router.post(`${this.getBasePath()}/signup`, this.signUp);
         this.router.get(`${this.getBasePath()}/signin`, this.viewSignIn);
+        this.router.post(`${this.getBasePath()}/signin`, this.signIn);
         this.router.get(`${this.getBasePath()}/signout`, this.signOut);
         this.router.get(`${this.getBasePath()}/profile`, this.viewProfile);
         this.router.post(`${this.getBasePath()}/update-profile`, this.updateProfile);
@@ -52,9 +55,7 @@ class HomeController extends BaseController {
 
     private async viewHome(req: Request, res: Response): Promise<void> {
         const db = req.db;
-        await super.renderVue(req, res, Home, {
-            title: "Muahahahah",
-        }, {
+        await super.renderVue(req, res, Home, {}, {
             title: "Trang chủ",
         });
     }
@@ -105,9 +106,7 @@ class HomeController extends BaseController {
     }
 
     private viewSignIn(req: Request, res: Response) {
-        return res.render("user/signin", {
-            layout: "layout/user_layout",
-        });
+        return super.renderVue(req, res, SignIn);
     }
 
     private async signUp(req: Request<{}, {}, SignUpDTO>, res: Response) {
@@ -117,6 +116,7 @@ class HomeController extends BaseController {
         // Create a profile for the user
         const profile = new Profile();
         profile.name = name;
+        profile.email  = email;
         profile.gender = gender;
         profile.photo = "";
         profile.phone = phone;
@@ -136,7 +136,7 @@ class HomeController extends BaseController {
             role: result.role,
         };
 
-        return res.redirect("/home?message=Đăng ký thành công");
+        res.redirect('/home');
     }
 
     private async viewProfile(req: Request, res: Response) {
@@ -186,6 +186,36 @@ class HomeController extends BaseController {
     }
 
     private async signOut(req: Request, res: Response) {
+        req.session.destroy((err) => {
+            if (err) return res.status(500).json({ message: "Không thể đăng xuất" });
+            res.clearCookie("connect.sid"); // Xóa cookie session
+            res.json({ message: "Đăng xuất thành công" });
+        });
+    }
+
+    private async signIn(req: Request, res: Response) {
+        const db = req.db;
+        const { username, password } = req.body;
+        const user = await db.getRepository(User).findOne({
+            where: {
+                username,
+            },
+        });
+
+        if (!user || !bcrypt.compareSync(password, user.password)) {
+            res.status(401).json({
+                message: "Đăng nhập thất bại",
+            });
+            return;
+        }
+
+        req.session.user = user;
+        req.session.save();
+
+        res.status(200).json({
+            message:'Đăng nhập thành công'
+        })
+
 
     }
 }

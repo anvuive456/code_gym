@@ -3,6 +3,12 @@ import { defineComponent, onMounted, onBeforeUnmount } from 'vue';
 
 export default defineComponent({
     name: 'NavBar',
+    props:{
+        userFullName: {
+            type: String,
+            required: true,
+        }
+    },
     setup() {
         const toggleNavbarMethod = () => {
             if (window.innerWidth > 992) {
@@ -48,8 +54,9 @@ export default defineComponent({
             window.removeEventListener('resize', toggleNavbarMethod);
         });
 
-        return {};
+
     },
+
 });
 </script>
 

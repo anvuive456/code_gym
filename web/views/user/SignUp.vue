@@ -3,10 +3,15 @@
 import Header from "./Header.vue";
 import NavBar from "./NavBar.vue";
 import Footer from "./Footer.vue";
+
+defineProps<{
+    userFullName: string;
+}>()
+
 </script>
 
 <template>
-    <NavBar />
+    <NavBar :user-full-name="userFullName" />
     <Header title="Đăng ký"/>
 
     <div class="w-50 mx-auto my-4">

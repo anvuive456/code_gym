@@ -4,8 +4,10 @@ import { Request, Response } from "express";
 import { Branch } from "@entities/branch.entity";
 import { FitnessPackage } from "@entities/fitness_package.entity";
 import { Promotion } from "@entities/promotion.entity";
-import AdminLogin from "../../../web/views/admin/AdminLogin.vue";
 import bcrypt from "bcrypt";
+import AdminDashboard from "../../../web/views/admin/AdminDashboard.vue";
+import AdminLogin from "../../../web/views/admin/AdminLogin.vue";
+import { Role } from "@entities/role.entity";
 
 class AdminController extends BaseController {
     protected getBasePath(): string {
@@ -18,6 +20,7 @@ class AdminController extends BaseController {
         // this.router.post(`${this.getBasePath()}/signin`,(req)=>{}, this.signIn);
         this.router.get(`${this.getBasePath()}/`, this.viewHomePage);
     }
+
     private async viewHomePage(req: Request, res: Response) {
         if (!req.session.user) {
             return res.redirect("/admin/signin");
@@ -46,9 +49,10 @@ class AdminController extends BaseController {
             },
         ];
 
-        await super.renderVue(req, res, AdminLogin, { br: branches });
+        await super.renderVue(req, res, AdminDashboard, { br: branches });
         // return res.render("admin/home_page", { title: "Home Page", branches });
     }
+
     private async signOut(req: Request, res: Response) {
         req.session.destroy((err: any) => {
             if (!err) {
@@ -58,19 +62,7 @@ class AdminController extends BaseController {
     }
 
     private async signInView(req: Request, res: Response) {
-        // return res.render("admin/signin", {
-        //     error: req.query.error,
-        //     title: "Admin Panel",
-        // });
-        const branches = [
-            {
-                title: "Hello world",
-            },
-            {
-                title: "Hello world2",
-            },
-        ];
-        return super.renderVue(req, res, AdminLogin, { branches });
+        return super.renderVue(req, res, AdminLogin);
     }
 
     private async signIn(req: Request, res: Response) {
@@ -79,9 +71,14 @@ class AdminController extends BaseController {
         const db = req.db;
         const user = await db.getRepository(User).findOneBy({
             username,
+            role: Role.admin,
         });
-        if (!user || !(await bcrypt.compare(password, user.password))) {
-            return res.redirect("/admin/signin?error=Invalid credentials");
+        console.log(bcrypt.hashSync(password, 10), user?.password);
+        if (!user || !bcrypt.compareSync(password, user.password)) {
+            res.status(401).json({
+                message: "Đăng nhập thất bại",
+            });
+            return;
         }
         if (user) {
             req.session.user = {
@@ -90,7 +87,10 @@ class AdminController extends BaseController {
                 username: user.username,
             }; // Lưu thông tin người dùng vào session
         }
-        res.redirect("/admin");
+        res.json({
+            message: "Đăng nhập thành công",
+        });
     }
 }
+
 export default AdminController;

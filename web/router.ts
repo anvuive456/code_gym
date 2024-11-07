@@ -19,6 +19,11 @@ export const routes: RouteRecordRaw[] = [
         component: () => import("./views/user/SignUp.vue"),
     },
     {
+        path: "/signin",
+        name: "SignIn",
+        component: () => import("./views/user/SignIn.vue"),
+    },
+    {
         path: "/about",
         name: "About",
         component: () => import("./views/user/About.vue"),
@@ -43,12 +48,17 @@ export const routes: RouteRecordRaw[] = [
         name: "AdminLogin",
         component: () => import("./views/admin/AdminLogin.vue"),
     },
+    {
+        path: "/admin",
+        name: "Admin",
+        component: () => import("./views/admin/AdminDashboard.vue"),
+    },
     // Add more routes as needed
 ];
 
 // Export a function to create a new router instance for each request
 export function createRouterInstance() {
-    const _routes: RouteRecordRaw[] = routes.map((value) => {
+    const _routes: RouteRecordRaw[] = routes.map(value => {
         return {
             ...value,
             props(to: any) {
