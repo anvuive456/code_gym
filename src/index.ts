@@ -6,6 +6,7 @@ import session from "express-session";
 import path from "path";
 import AdminController from "@features/admin/admin.controller";
 import HomeController from "@features/home/home.controller";
+import UserController from "@features/user/user.controller";
 
 export async function main() {
     dotenv.config();
@@ -16,7 +17,6 @@ export async function main() {
 
     app.use(express.static(path.resolve("public")));
     app.use("/dist/client", express.static(path.resolve("dist", "client")));
-
 
     app.use(express.json());
     app.use(express.urlencoded({ extended: true })); // Để xử lý form data
@@ -45,14 +45,15 @@ export async function main() {
     );
 
     app.use(morganMiddleware);
-    const { default: dbMiddleware } = await import("@middlewares/db.middleware");
+    const { default: dbMiddleware } = await import(
+        "@middlewares/db.middleware"
+    );
     app.use(dbMiddleware);
-
 
     // await loadControllers(app);
     app.use(new AdminController().router);
     app.use(new HomeController().router);
-
+    app.use(new UserController().router);
 
     app.listen(port, () => {
         Logger.info(`Server is up and running @ http://localhost:${port}`);
@@ -60,4 +61,3 @@ export async function main() {
 }
 
 main();
-

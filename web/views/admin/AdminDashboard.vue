@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import BackToTopButton from "../../components/admin/BackToTopButton.vue";
-import Spinner from "../../components/admin/Spinner.vue";
-import SideBar from "../../web/components/admin/SideBar.vue";
-import AdminTable from "../../web/components/admin/AdminTable.vue";
+import Spinner from "../../components/admin/Spinner.vue";  
 
 import { ref, defineProps, onBeforeMount } from "vue";
+import SideBar from "../../components/admin/SideBar.vue";
+// import AdminTable from "@/web/components/admin/AdminTable.vue";
+import AdminTable from "../../components/admin/AdminTable.vue";
 // Importing props
 //Thay vì khai báo props trong export default defineComponent(),
 // chúng ta sử dụng defineProps để khai báo các props trong <script setup>.
@@ -33,12 +34,23 @@ const getBranchs = (): ChiNhanh[] => {
         { name: "Chi nhánh C", address: "Địa chỉ C", action: null },
     ];
 };
+const myData = [1, 2, 3, 'a', 'b']
+
+const handleDelete = () => {
+  console.log('Button clicked!')
+}
+const handleEdit = () => {
+  console.log('Button clicked!')
+}
+
+
+
+
 // Hàm để xử lý khi nhấn nút Xóa
 const deleteBranch = (index: number) => {
     cc.value.splice(index, 1);
     console.log("Xóa chi nhánh ở vị trí:", index);
-};
-
+}; 
 // Hàm để xử lý khi nhấn nút Sửa
 const editBranch = (index: number) => {
     const branch = cc.value[index];
@@ -52,7 +64,7 @@ const editBranch = (index: number) => {
 // Sử dụng `onMounted` để lấy dữ liệu khi component được mount
 onBeforeMount(() => {
     cc.value = getBranchs();
-});
+}); 
 // Logging props (just for demonstration)
 // Bạn có thể thực hiện bất kỳ hành động nào với các props ngay trong setup function.?
 console.log(props.branches);
@@ -119,7 +131,7 @@ console.log(props.branches);
                 <div
                     class="row vh-100 bg-light rounded align-items-center justify-content-center mx-0"
                 >
-                    <AdminTable title="Danh sách chi nhánh" />
+                    <AdminTable title="Danh sách người dùng" :data="myData"  @delete="handleDelete" @edit="handleEdit" />
                 </div>
             </div>
             <!-- 404 End -->

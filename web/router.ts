@@ -53,6 +53,11 @@ export const routes: RouteRecordRaw[] = [
         name: "Admin",
         component: () => import("./views/admin/AdminDashboard.vue"),
     },
+    {
+        path: "/user",
+        name: "User",
+        component: () => import("./views/user/SignIn.vue"),
+    },
     // Add more routes as needed
 ];
 

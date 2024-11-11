@@ -6,24 +6,24 @@ import { FitnessPackage } from "@entities/fitness_package.entity";
 import { Promotion } from "@entities/promotion.entity";
 import bcrypt from "bcrypt";
 import AdminDashboard from "../../../web/views/admin/AdminDashboard.vue";
-import AdminLogin from "../../../web/views/admin/AdminLogin.vue";
+import SignIn from "../../../web/views/user/SignIn.vue";
 import { Role } from "@entities/role.entity";
 
-class AdminController extends BaseController {
+class UserController extends BaseController {
     protected getBasePath(): string {
-        return "/admin";
+        return "/user";
     }
 
     protected initRoutes(): void {
         this.router.get(`${this.getBasePath()}/signin`, this.signInView);
-        this.router.post(`${this.getBasePath()}/signin`, this.signIn);
+        // this.router.post(`${this.getBasePath()}/signin`, this.signIn);
         // this.router.post(`${this.getBasePath()}/signin`,(req)=>{}, this.signIn);
         this.router.get(`${this.getBasePath()}/`, this.viewHomePage);
     }
 
     private async viewHomePage(req: Request, res: Response) {
         if (!req.session.user) {
-            return res.redirect("/admin/signin");
+            return res.redirect("/user/signin");
         }
 
         let branches: Branch[] = [
@@ -62,7 +62,7 @@ class AdminController extends BaseController {
     }
 
     private async signInView(req: Request, res: Response) {
-        return super.renderVue(req, res, AdminLogin);
+        return super.renderVue(req, res, SignIn);
     }
 
     private async signIn(req: Request, res: Response) {
@@ -94,4 +94,4 @@ class AdminController extends BaseController {
     }
 }
 
-export default AdminController;
+export default UserController;
