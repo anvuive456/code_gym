@@ -7,6 +7,7 @@ import { Promotion } from "@entities/promotion.entity";
 import bcrypt from "bcrypt";
 import AdminDashboard from "../../../web/views/admin/AdminDashboard.vue";
 import AdminLogin from "../../../web/views/admin/AdminLogin.vue";
+import AdminUsers from "../../../web/views/admin/AdminUsers.vue";
 import { Role } from "@entities/role.entity";
 
 class AdminController extends BaseController {
@@ -19,6 +20,10 @@ class AdminController extends BaseController {
         this.router.post(`${this.getBasePath()}/signin`, this.signIn);
         // this.router.post(`${this.getBasePath()}/signin`,(req)=>{}, this.signIn);
         this.router.get(`${this.getBasePath()}/`, this.viewHomePage);
+        this.router.get(`${this.getBasePath()}/users`, this.viewUsers);
+    }
+    viewUsers(req: Request, res: Response) {
+        super.renderVue(req, res, AdminUsers);
     }
 
     private async viewHomePage(req: Request, res: Response) {

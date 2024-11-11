@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import BackToTopButton from "../../components/admin/BackToTopButton.vue";
 import Spinner from "../../components/admin/Spinner.vue";
-import SideBar from "../../web/components/admin/SideBar.vue";
-import AdminTable from "../../web/components/admin/AdminTable.vue";
+import SideBar from "../../components/admin/SideBar.vue";
+import AdminTable from "../../components/admin/AdminTable.vue";
 
 import { ref, defineProps, onBeforeMount } from "vue";
 // Importing props
@@ -50,7 +50,12 @@ const editBranch = (index: number) => {
 // Cái này được sử dụng để gọi phương thức getBranchs khi component chuẩn bị mount.
 
 // Sử dụng `onMounted` để lấy dữ liệu khi component được mount
-onBeforeMount(() => {
+//
+//
+const delay = (delayInms: number) => {
+    return new Promise(resolve => setTimeout(resolve, delayInms));
+};
+onBeforeMount(async () => {
     cc.value = getBranchs();
 });
 // Logging props (just for demonstration)
@@ -58,95 +63,11 @@ onBeforeMount(() => {
 console.log(props.branches);
 </script>
 <template>
-    <BackToTopButton />
-    <div class="container-xxl position-relative bg-white d-flex p-0">
-        <Spinner />
-
-        <SideBar />
-
-        <!-- Content Start -->
-        <div class="content">
-            <!-- Navbar Start -->
-            <nav
-                class="navbar navbar-expand bg-light navbar-light sticky-top px-4 py-0"
-            >
-                <a href="index.html" class="navbar-brand d-flex d-lg-none me-4">
-                    <h2 class="text-primary mb-0">
-                        <i class="fa fa-hashtag"></i>
-                    </h2>
-                </a>
-                <a href="#" class="sidebar-toggler flex-shrink-0">
-                    <i class="fa fa-bars"></i>
-                </a>
-                <form class="d-none d-md-flex ms-4">
-                    <input
-                        class="form-control border-0"
-                        type="search"
-                        placeholder="Search"
-                    />
-                </form>
-                <div class="navbar-nav align-items-center ms-auto">
-                    <div class="nav-item dropdown">
-                        <a
-                            href="#"
-                            class="nav-link dropdown-toggle"
-                            data-bs-toggle="dropdown"
-                        >
-                            <img
-                                class="rounded-circle me-lg-2"
-                                src="http://localhost:3000/images/user.jpg"
-                                alt=""
-                                style="width: 40px; height: 40px"
-                            />
-                            <span class="d-none d-lg-inline-flex"
-                                >John Doe</span
-                            >
-                        </a>
-                        <div
-                            class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0"
-                        >
-                            <a href="#" class="dropdown-item">My Profile</a>
-                            <a href="#" class="dropdown-item">Settings</a>
-                            <a href="#" class="dropdown-item">Log Out</a>
-                        </div>
-                    </div>
-                </div>
-            </nav>
-            <!-- Navbar End -->
-
-            <!-- 404 Start -->
-            <div class="container-fluid pt-4 px-4">
-                <div
-                    class="row vh-100 bg-light rounded align-items-center justify-content-center mx-0"
-                >
-                    <AdminTable title="Danh sách chi nhánh" />
-                </div>
-            </div>
-            <!-- 404 End -->
-
-            <!-- Footer Start -->
-            <div class="container-fluid pt-4 px-4">
-                <div class="bg-light rounded-top p-4">
-                    <div class="row">
-                        <div class="col-12 col-sm-6 text-center text-sm-start">
-                            &copy; <a href="#">Your Site Name</a>, All Right
-                            Reserved.
-                        </div>
-                        <div class="col-12 col-sm-6 text-center text-sm-end">
-                            <!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->
-                            Designed By
-                            <a href="https://htmlcodex.com">HTML Codex</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Footer End -->
-        </div>
-        <!-- Content End -->
-        <!-- Back to Top -->
-        <!-- <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"
-            ><i class="bi bi-arrow-up"></i
-        ></a> -->
-    </div>
+    <AdminTable
+        title="Danh sách chi nhánh"
+        :data="cc"
+        :on-delete="deleteBranch"
+        :on-edit="editBranch"
+    />
 </template>
 <style scoped></style>

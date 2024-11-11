@@ -50,9 +50,21 @@ export const routes: RouteRecordRaw[] = [
     },
     {
         path: "/admin",
-        name: "Admin",
-        component: () => import("./views/admin/AdminDashboard.vue"),
+        component: () => import("./views/layout/AdminLayout.vue"),
+        children: [
+            {
+                path: "",
+                name: "AdminDasboard",
+                component: () => import("./views/admin/AdminDashboard.vue"),
+            },
+            {
+                path: "/admin/users",
+                name: "AdminUsers",
+                component: () => import("./views/admin/AdminUsers.vue"),
+            },
+        ],
     },
+
     // Add more routes as needed
 ];
 
@@ -64,6 +76,14 @@ export function createRouterInstance() {
             props(to: any) {
                 return window.__INITIAL_PROPS__;
             },
+            children: value.children?.map(e => {
+                return {
+                    ...e,
+                    props(to: any) {
+                        return window.__INITIAL_PROPS__;
+                    },
+                };
+            }),
         } as RouteRecordRaw;
     });
     return createRouter({
