@@ -1,10 +1,16 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable } from "typeorm";
+import {
+    Entity,
+    PrimaryGeneratedColumn,
+    Column,
+    ManyToMany,
+    JoinTable,
+    BaseEntity,
+} from "typeorm";
 import { FitnessPackage } from "@entities/fitness_package.entity";
 import { Branch } from "@entities/branch.entity";
 
-
 @Entity({ name: "promotions" })
-export class Promotion {
+export class Promotion extends BaseEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -23,13 +29,19 @@ export class Promotion {
     @Column("date")
     endDate: Date;
 
+    @Column({ nullable: true, type: "datetime" })
+    deletedAt?: Date;
+
     // Quan hệ với chi nhánh
     @ManyToMany(() => Branch, branch => branch.promotions)
     @JoinTable()
     branches: Branch[];
 
     // Quan hệ với loại phòng tập
-    @ManyToMany(() => FitnessPackage, fitnesspackage => fitnesspackage.promotions)
+    @ManyToMany(
+        () => FitnessPackage,
+        fitnesspackage => fitnesspackage.promotions,
+    )
     @JoinTable()
     fitnesspackages: FitnessPackage[];
 }
