@@ -25,14 +25,14 @@ export default defineComponent({
     methods: {
         async login() {
             try {
-                const response = await fetch("/signin", {
+                const response = await fetch("/user/signin", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ username: this.username, password: this.password }),
                 });
 
                 if (!response.ok) throw new Error("Đăng nhập thất bại");
-                this.$router.push("/admin"); // Điều hướng đến trang yêu cầu đăng nhập
+                this.$router.push("/user"); // Điều hướng đến trang  
             } catch (error: any) {
                 this.errorMessage = error.message;
             }

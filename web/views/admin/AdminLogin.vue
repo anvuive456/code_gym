@@ -1,5 +1,6 @@
-<script lang="ts">
-import { defineComponent } from "vue";
+<!-- option api -->
+<script  lang="ts">
+import { defineComponent, ref } from "vue";
 
 export default defineComponent({
     name: "AdminLogin",
@@ -30,6 +31,7 @@ export default defineComponent({
         },
     },
 });
+ 
 </script>
 
 <template>
