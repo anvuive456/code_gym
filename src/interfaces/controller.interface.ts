@@ -39,7 +39,6 @@ export abstract class BaseController {
             const ctx = {
                 url: req.url,
             };
-            Logger.info("USER:", req.session.user?.username);
             // Create a Vue app with the specified component and props
             const app = createSSRApp(component, {
                 ...props,
@@ -55,12 +54,14 @@ export abstract class BaseController {
                 description = "",
                 additionalLinks = [],
                 additionalScripts = [],
+                disableBS = false,
             } = data || {
                 title: "CodeGym",
                 keywords: [],
                 additionalScripts: [],
                 additionalLinks: [],
                 description: "",
+                disableBS: false,
             };
 
             // Generate additional link tags
@@ -98,17 +99,21 @@ export abstract class BaseController {
             <link href=""http://localhost:3000/lib/flaticon/font/flaticon.css" rel="stylesheet">
 
             <!-- Customized Bootstrap Stylesheet -->
-            <link href="http://localhost:3000/css/style.min.css" rel="stylesheet">
+            ${disableBS ? "" : `<link href="http://localhost:3000/css/style.min.css" rel="stylesheet">`}
 
             <!-- Additional Stylesheets -->
             ${links && links}
         </head>
 
         <body class="bg-white">
-        <div id="app">
+        <div id="app" style="max-height:100vh;">
          ${html}
         </div>
         <!-- JavaScript Libraries -->
+        ${
+            disableBS
+                ? ""
+                : `
         <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
         <script src="http://localhost:3000/lib/easing/easing.min.js"></script>
@@ -118,10 +123,10 @@ export abstract class BaseController {
         <script src="http://localhost:3000/lib/tempusdominus/js/moment.min.js"></script>
         <script src="http://localhost:3000/lib/tempusdominus/js/moment-timezone.min.js"></script>
         <script src="http://localhost:3000/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+        `
+        }
 
 
-        <!-- Template Javascript -->
-        <script src="http://localhost:3000/js/admin_main.js"></script>
         <!-- Additional Scripts -->
         ${scripts && scripts}
         <!-- Add init state to Component -->
@@ -155,4 +160,6 @@ interface TemplateOptions {
     description?: string;
     additionalLinks?: string[];
     additionalScripts?: string[];
+    // Disable bootstrap for using other styles
+    disableBS?: boolean;
 }

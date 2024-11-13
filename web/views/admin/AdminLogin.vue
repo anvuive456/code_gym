@@ -23,7 +23,7 @@ export default defineComponent({
                 });
 
                 if (!response.ok) throw new Error("Đăng nhập thất bại");
-                this.$router.push("/admin"); // Điều hướng đến trang yêu cầu đăng nhập
+                this.$router.push("/admin/branches"); // Điều hướng đến trang yêu cầu đăng nhập
             } catch (error: any) {
                 this.errorMessage = error.message;
             }
@@ -33,41 +33,53 @@ export default defineComponent({
 </script>
 
 <template>
-    <div class="row justify-content-center">
-        <div class="col-md-4">
-            <h3 class="text-center">Admin Login</h3>
-            <!--            <div class="alert alert-danger"><%= error %></div>-->
-            <form @submit.prevent="login" method="POST">
-                <div class="form-group">
-                    <label for="username">Username</label>
+    <article class="container">
+        <header class="has-text-centered mb-5">
+            <h3 class="title is-3">Admin Login</h3>
+        </header>
+        <form @submit.prevent="login">
+            <div class="field">
+                <label class="label" for="username">Username</label>
+                <div class="control">
                     <input
                         v-model="username"
                         type="text"
-                        class="form-control"
+                        class="input"
                         id="username"
                         name="username"
                         required
                     />
                 </div>
-                <div class="form-group">
-                    <label for="password">Password</label>
+            </div>
+            <div class="field">
+                <label class="label" for="password">Password</label>
+                <div class="control">
                     <input
                         v-model="password"
                         type="password"
-                        class="form-control"
+                        class="input"
                         id="password"
                         name="password"
                         required
                     />
                 </div>
-                <p v-if="errorMessage">{{ errorMessage }}</p>
-
-                <button type="submit" class="btn btn-primary btn-block">
+            </div>
+            <p v-if="errorMessage" class="has-text-danger">
+                {{ errorMessage }}
+            </p>
+            <footer class="mt-5">
+                <button type="submit" class="button is-primary is-fullwidth">
                     Đăng nhập
                 </button>
-            </form>
-        </div>
-    </div>
+            </footer>
+        </form>
+    </article>
 </template>
 
-<style scoped></style>
+<style scoped>
+.container {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+</style>

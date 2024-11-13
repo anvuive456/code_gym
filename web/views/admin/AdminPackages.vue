@@ -3,54 +3,56 @@ import AdminTable from "../../components/admin/AdminTable.vue";
 import ModalForm from "../../components/admin/ModalForm.vue";
 import { showToast } from "../../toast";
 
-import { ref, defineProps, onBeforeMount, onMounted } from "vue";
+import { ref, defineProps, onBeforeMount } from "vue";
 
 // Modal control
 const showModal = ref(false);
 const modalMode = ref("add");
 const modalTitle = ref("");
-const currentData = ref<User>();
+const currentData = ref<Package>();
 // Define fields for the form
 const formFields = [
-    { key: "id", label: "ID người dùng", type: "text", required: true },
-    { key: "name", label: "Tên người dùng", type: "text", required: true },
+    { key: "name", label: "Gói tập", type: "text", required: true },
+    { key: "description", label: "Thông tin", type: "text", required: true },
 ];
 // Importing props
 //Thay vì khai báo props trong export default defineComponent(),
 // chúng ta sử dụng defineProps để khai báo các props trong <script setup>.
 // const props = defineProps({
 //     users: {
-//         type: Array as () => User[],
+//         type: Array as () => Package[],
 //         required: true,
 //     },
 // });
 
 // Declare reactive state using ref//Thay vì dùng data() để khai báo trạng thái, ta sử dụng ref
 //cc được khai báo là một mảng chuỗi (ref<string[]>([])).
-const users = ref<User[]>([]);
+const data = ref<Package[]>([]);
 
 // Method to get branches (returning sample data)
 // Được khai báo trực tiếp trong phần setup như một hàm bình thường, trả về mảng các chuỗi.
-interface User {
+interface Package {
     id: number;
-    username: String;
+    name: String;
+    description: String;
 }
-// const getUsers = (): User[] => {
+// const getUsers = (): Package[] => {
 //     return props.users;
 // };
 // Hàm để xử lý khi nhấn nút Xóa
 const deleteUser = (index: number) => {
-    users.value.splice(index, 1);
+    data.value.splice(index, 1);
     console.log("Xóa chi nhánh ở vị trí:", index);
 };
 
 // Show the modal in "Add" mode
 const showAddModal = () => {
     modalMode.value = "add";
-    modalTitle.value = "Thêm Chi Nhánh";
+    modalTitle.value = "Thêm Gói tập";
     currentData.value = {
         id: -1,
-        username: "",
+        name: "",
+        description: "",
     };
     showModal.value = true;
 };
@@ -58,10 +60,10 @@ const showAddModal = () => {
 // Show the modal in "Edit" mode
 
 // Hàm để xử lý khi nhấn nút Sửa
-const editUser = (index: number) => {
+const edit = (index: number) => {
     modalMode.value = "edit";
     modalTitle.value = "Chỉnh Sửa Chi Nhánh";
-    currentData.value = { ...users.value[index] };
+    currentData.value = { ...data.value[index] };
     showModal.value = true;
 };
 
@@ -73,48 +75,44 @@ const editUser = (index: number) => {
 //
 //
 onBeforeMount(async () => {
-    users.value = await fetch("/admin/users", {
+    data.value = await fetch("/admin/packages", {
         method: "POST",
-    })
-        .then(res => res.json())
-        .catch(e => showToast(`${e}`, "error"));
+    }).then(res => res.json());
 });
 
 const handleFormSubmit = async () => {
     try {
         // Make API call to update the branch data
-        const response = await fetch(`/admin/users/${currentData.value?.id}`, {
-            method: "PUT",
-            body: JSON.stringify(currentData.value),
-        });
+        const response = await fetch(
+            `/admin/packages/${currentData.value?.id}`,
+            {
+                method: "PUT",
+                body: JSON.stringify(currentData.value),
+            },
+        );
         const json = await response.json();
 
         if (!response.ok) {
-            console.error("Error updating branch:", json.message);
-            alert("Có lỗi xảy ra khi cập nhật thông tin!");
-            return;
+            showToast("Có lỗi xảy ra khi cập nhật thông tin!", "error");
         }
 
         // Log response or handle successful update
-        console.log("Branch updated successfully:", json);
-        alert("Thông tin chi nhánh đã được cập nhật!");
+        showToast("Thông tin đã được cập nhật!", "success");
         showModal.value = false;
     } catch (error) {}
 };
 </script>
 <template>
     <AdminTable
-        title="Danh sách người dùng"
-        :data="users"
+        title="Danh sách gói tập"
+        :data="data"
         :on-delete="deleteUser"
-        :on-edit="editUser"
+        :on-edit="edit"
         :on-add="showAddModal"
     />
 
     <ModalForm
-        :submit-text="
-            modalMode == 'edit' ? 'Sửa người dùng' : 'Thêm người dùng'
-        "
+        :submit-text="modalMode == 'edit' ? 'Sửa gói tập' : 'Thêm gói tập'"
         :on-close="() => (showModal = false)"
         :show="showModal"
         :title="modalTitle"

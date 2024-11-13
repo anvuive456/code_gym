@@ -1,4 +1,5 @@
 import {
+    BaseEntity,
     BeforeInsert,
     BeforeUpdate,
     Column,
@@ -14,7 +15,7 @@ import { Branch } from "@entities/branch.entity";
 import bcrypt from "bcrypt";
 
 @Entity({ engine: "InnoDB", name: "users" })
-export class User {
+export class User extends BaseEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -23,6 +24,9 @@ export class User {
 
     @Column({ name: "password" })
     password: string;
+
+    @Column({ nullable: true, type: "datetime" })
+    deletedAt?: Date;
 
     // @Column({
     //     type: "simple-enum",

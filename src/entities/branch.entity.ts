@@ -1,10 +1,18 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToMany, JoinTable } from "typeorm";
+import {
+    Entity,
+    PrimaryGeneratedColumn,
+    Column,
+    OneToMany,
+    ManyToMany,
+    JoinTable,
+    BaseEntity,
+} from "typeorm";
 import { User } from "@entities/user.entity";
 import { FitnessPackage } from "@entities/fitness_package.entity";
 import { Promotion } from "@entities/promotion.entity";
 
-@Entity({name:'branches'})
-export class Branch {
+@Entity({ name: "branches" })
+export class Branch extends BaseEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -19,6 +27,9 @@ export class Branch {
 
     @Column()
     lng: number;
+
+    @Column({ nullable: true, type: "datetime" })
+    deletedAt?: Date;
 
     @OneToMany(() => User, user => user.branch)
     users: User[];

@@ -1,46 +1,62 @@
 <script setup lang="ts">
 import AdminTable from "../../components/admin/AdminTable.vue";
 import ModalForm from "../../components/admin/ModalForm.vue";
-import { showToast } from "../../toast";
 
-import { ref, defineProps, onBeforeMount, onMounted } from "vue";
+import { ref, defineProps, onBeforeMount } from "vue";
 
 // Modal control
 const showModal = ref(false);
 const modalMode = ref("add");
 const modalTitle = ref("");
-const currentData = ref<User>();
+const currentData = ref<ChiNhanh>();
 // Define fields for the form
 const formFields = [
-    { key: "id", label: "ID người dùng", type: "text", required: true },
-    { key: "name", label: "Tên người dùng", type: "text", required: true },
+    { key: "name", label: "Tên Chi Nhánh", type: "text", required: true },
+    { key: "address", label: "Địa Chỉ", type: "text", required: true },
+    {
+        key: "lat",
+        label: "Latitude",
+        type: "number",
+        step: "any",
+        required: true,
+    },
+    {
+        key: "lng",
+        label: "Longitude",
+        type: "number",
+        step: "any",
+        required: true,
+    },
 ];
 // Importing props
 //Thay vì khai báo props trong export default defineComponent(),
 // chúng ta sử dụng defineProps để khai báo các props trong <script setup>.
 // const props = defineProps({
-//     users: {
-//         type: Array as () => User[],
+//     branches: {
+//         type: Array as () => ChiNhanh[],
 //         required: true,
 //     },
 // });
 
 // Declare reactive state using ref//Thay vì dùng data() để khai báo trạng thái, ta sử dụng ref
 //cc được khai báo là một mảng chuỗi (ref<string[]>([])).
-const users = ref<User[]>([]);
+const branches = ref<ChiNhanh[]>([]);
 
 // Method to get branches (returning sample data)
 // Được khai báo trực tiếp trong phần setup như một hàm bình thường, trả về mảng các chuỗi.
-interface User {
+interface ChiNhanh {
     id: number;
-    username: String;
+    name: string;
+    address: string;
+    lat: number;
+    lng: number;
 }
-// const getUsers = (): User[] => {
-//     return props.users;
+// const getBranchs = (): ChiNhanh[] => {
+//     return props.branches;
 // };
 // Hàm để xử lý khi nhấn nút Xóa
-const deleteUser = (index: number) => {
-    users.value.splice(index, 1);
+const deleteBranch = (index: number) => {
+    branches.value.splice(index, 1);
     console.log("Xóa chi nhánh ở vị trí:", index);
 };
 
@@ -50,7 +66,10 @@ const showAddModal = () => {
     modalTitle.value = "Thêm Chi Nhánh";
     currentData.value = {
         id: -1,
-        username: "",
+        address: "",
+        lat: 0,
+        lng: 0,
+        name: "",
     };
     showModal.value = true;
 };
@@ -58,10 +77,10 @@ const showAddModal = () => {
 // Show the modal in "Edit" mode
 
 // Hàm để xử lý khi nhấn nút Sửa
-const editUser = (index: number) => {
+const editBranch = (index: number) => {
     modalMode.value = "edit";
     modalTitle.value = "Chỉnh Sửa Chi Nhánh";
-    currentData.value = { ...users.value[index] };
+    currentData.value = { ...branches.value[index] };
     showModal.value = true;
 };
 
@@ -73,26 +92,26 @@ const editUser = (index: number) => {
 //
 //
 onBeforeMount(async () => {
-    users.value = await fetch("/admin/users", {
+    branches.value = await fetch("/admin/branches", {
         method: "POST",
-    })
-        .then(res => res.json())
-        .catch(e => showToast(`${e}`, "error"));
+    }).then(res => res.json());
 });
 
 const handleFormSubmit = async () => {
     try {
         // Make API call to update the branch data
-        const response = await fetch(`/admin/users/${currentData.value?.id}`, {
-            method: "PUT",
-            body: JSON.stringify(currentData.value),
-        });
+        const response = await fetch(
+            `/admin/branches/${currentData.value?.id}`,
+            {
+                method: "PUT",
+                body: JSON.stringify(currentData.value),
+            },
+        );
         const json = await response.json();
 
         if (!response.ok) {
             console.error("Error updating branch:", json.message);
             alert("Có lỗi xảy ra khi cập nhật thông tin!");
-            return;
         }
 
         // Log response or handle successful update
@@ -103,25 +122,28 @@ const handleFormSubmit = async () => {
 };
 </script>
 <template>
-    <AdminTable
-        title="Danh sách người dùng"
-        :data="users"
-        :on-delete="deleteUser"
-        :on-edit="editUser"
-        :on-add="showAddModal"
-    />
+    <div>
+        <AdminTable
+            title="Danh sách chi nhánh"
+            :data="branches"
+            :on-delete="deleteBranch"
+            :on-edit="editBranch"
+            :on-add="showAddModal"
+        />
 
-    <ModalForm
-        :submit-text="
-            modalMode == 'edit' ? 'Sửa người dùng' : 'Thêm người dùng'
-        "
-        :on-close="() => (showModal = false)"
-        :show="showModal"
-        :title="modalTitle"
-        :modalId="'branchModal'"
-        :fields="formFields"
-        :initialData="currentData"
-        :mode="modalMode"
-        @submit="handleFormSubmit"
-    />
+        <ModalForm
+            :submit-text="
+                modalMode == 'edit' ? 'Sửa chi nhánh' : 'Thêm chi nhánh'
+            "
+            :on-close="() => (showModal = false)"
+            :show="showModal"
+            :title="modalTitle"
+            :modalId="'branchModal'"
+            :fields="formFields"
+            :initialData="currentData"
+            :mode="modalMode"
+            @submit="handleFormSubmit"
+        />
+    </div>
 </template>
+<style scoped></style>
