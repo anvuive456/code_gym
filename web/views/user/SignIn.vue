@@ -13,6 +13,7 @@ export default defineComponent({
     data: function() {
         return {
             username: '',
+            role: 'user',   
             password: '',
             errorMessage: "",
 
@@ -31,10 +32,15 @@ export default defineComponent({
                     body: JSON.stringify({ username: this.username, password: this.password }),
                 });
 
-                if (!response.ok) throw new Error("Đăng nhập thất bại");
-                this.$router.push("/user"); // Điều hướng đến trang  
+                // Kiểm tra xem request có thành công hay không
+                const data = await response.json();
+                if (!response.ok){
+                    this.errorMessage = data.message || "Đăng nhập thất bại";
+                }else{ 
+                    this.$router.push("/home"); // Điều hướng đến trang  
+                }
             } catch (error: any) {
-                this.errorMessage = error.message;
+                this.errorMessage = error.message || "Lỗi kết nối!";
             }
         },
     },
