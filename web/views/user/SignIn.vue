@@ -20,16 +20,16 @@ export default defineComponent({
         };
     },
     props: {
-        userFullName: String,
+        userFullName: String,   
     },
     components: { Footer, Header, NavBar, Carousel, TimeTable },
     methods: {
         async login() {
             try {
                 const response = await fetch("/user/signin", {
-                    method: "POST",
+                    method: "POST", 
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ username: this.username, password: this.password }),
+                    body: JSON.stringify({ username: this.username, password: this.password,}),
                 });
 
                 // Kiểm tra xem request có thành công hay không

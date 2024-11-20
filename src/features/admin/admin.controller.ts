@@ -321,9 +321,16 @@ class AdminController extends BaseController {
             username: username,
             role: Role.admin,
         });
-        if (!user || !bcrypt.compareSync(password, user.password)) {
+        if(!user) {
+            res.status(404).json({
+                message:'Không tìm thấy người dùng'
+            })
+            return ;
+        }
+
+        if (!bcrypt.compareSync(password, user.password)) {
             res.status(401).json({
-                message: "Đăng nhập thất bại",
+                message: "Sai mk",
             });
             return;
         }

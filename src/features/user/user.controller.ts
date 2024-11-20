@@ -6,6 +6,7 @@ import { FitnessPackage } from "@entities/fitness_package.entity";
 import { Promotion } from "@entities/promotion.entity";
 import bcrypt from "bcrypt";
 import SignIn from "../../../web/views/user/SignIn.vue";
+import Home from "../../../web/views/user/Home.vue";
 import About from "../../../web/views/user/About.vue";
 import { Role } from "@entities/role.entity";
 
@@ -16,6 +17,7 @@ class UserController extends BaseController {
 
     protected initRoutes(): void {
         this.router.get(`${this.getBasePath()}/signin`, this.signInView);
+        this.router.get(`${this.getBasePath()}/dash`, this.signInViewDash);
         this.router.post(`${this.getBasePath()}/signin`, this.signIn);
         // this.router.post(`${this.getBasePath()}/signin`,(req)=>{}, this.signIn);
         this.router.get(`${this.getBasePath()}/`, this.viewHomePage);
@@ -79,6 +81,9 @@ class UserController extends BaseController {
     private async signInView(req: Request, res: Response) {
         return super.renderVue(req, res, SignIn);
     }
+    private async signInViewDash(req: Request, res: Response) {
+        return super.renderVue(req, res, Home);
+    }
 
     // private async signOut(req: Request, res: Response) {
     //     req.session.destroy(err => {
@@ -99,21 +104,23 @@ class UserController extends BaseController {
         });
         console.log("han user", user);
 
-        if (!user) {
-            //|| !bcrypt.compareSync(password, user.password)
-            res.status(401).json({
-                message: "Đăng nhập thất bại",
-            });
-            console.log("han tyest failed");
-            return;
-        }
+        // if (user == null) {
+        //     //|| !bcrypt.compareSync(password, user.password)
 
-        req.session.user = user;
-        req.session.save();
-        res.status(200).json({
-            message: "Đăng nhập thành công",
-        });
-        console.log("han tyest success");
+        //     res.status(401).send("Profile not found");
+        //     console.log("han tyest failed");
+        //     return;
+        // }
+
+        // req.session.user = user;
+        // req.session.save();
+        if (user != null) {
+            res.status(200).json({
+                message: "Đăng nhập thành công",
+            });
+            console.log("han tyest success");
+            return res.redirect("/user/dash");
+        }
     }
     // private async signIn(req: Request, res: Response) {
     //     const { username, password } = req.body;
