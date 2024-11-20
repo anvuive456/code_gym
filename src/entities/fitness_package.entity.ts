@@ -5,6 +5,7 @@ import {
     ManyToMany,
     JoinTable,
     BaseEntity,
+    CreateDateColumn,
 } from "typeorm";
 import { Promotion } from "@entities/promotion.entity";
 import { Branch } from "@entities/branch.entity";
@@ -20,10 +21,13 @@ export class FitnessPackage extends BaseEntity {
     @Column()
     description: string;
 
-    @Column({ nullable: true, type: "datetime" })
-    deletedAt?: Date;
+    @CreateDateColumn()
+    createdAt: Date;
 
-    @ManyToMany(() => Promotion, promotion => promotion.fitnesspackages)
+    @Column({ nullable: true, type: "datetime" })
+    deletedAt: Date | null;
+
+    @ManyToMany(() => Promotion, promotion => promotion.packages)
     @JoinTable()
     promotions: Promotion[];
 

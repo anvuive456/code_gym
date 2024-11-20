@@ -5,7 +5,7 @@ import { FitnessPackage } from "@/src/entities/fitness_package.entity";
 export default class BranchSeeder implements Seeder {
     public async run(factory: Factory): Promise<void> {
         // Tạo các bản ghi FitnessPackage trước để có dữ liệu cho Branch liên kết
-        const fitnessPackages = await factory(FitnessPackage)().createMany(10); // Tạo 10 FitnessPackage
+        const fitnessPackages = await FitnessPackage.find(); // Tạo 10 FitnessPackage
 
         // Tạo các Branch và liên kết với FitnessPackage
         await factory(Branch)()

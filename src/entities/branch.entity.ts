@@ -6,6 +6,7 @@ import {
     ManyToMany,
     JoinTable,
     BaseEntity,
+    CreateDateColumn,
 } from "typeorm";
 import { User } from "@entities/user.entity";
 import { FitnessPackage } from "@entities/fitness_package.entity";
@@ -28,8 +29,11 @@ export class Branch extends BaseEntity {
     @Column()
     lng: number;
 
+    @CreateDateColumn()
+    createdAt: Date;
+
     @Column({ nullable: true, type: "datetime" })
-    deletedAt?: Date;
+    deletedAt: Date | null;
 
     @OneToMany(() => User, user => user.branch)
     users: User[];

@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import AdminTable from "../../components/admin/AdminTable.vue";
 import ModalForm from "../../components/admin/ModalForm.vue";
+import { DialogFormField } from "../../components/admin/form-field";
 import { showToast } from "../../toast";
 
-import { ref, defineProps, onBeforeMount } from "vue";
+import { ref, defineProps, onBeforeMount, Ref } from "vue";
 
 // Modal control
 const showModal = ref(false);
@@ -11,9 +12,28 @@ const modalMode = ref("add");
 const modalTitle = ref("");
 const currentData = ref<Package>();
 // Define fields for the form
-const formFields = [
+const formFields: Ref<DialogFormField[]> = ref([
     { key: "name", label: "Gói tập", type: "text", required: true },
-    { key: "description", label: "Thông tin", type: "text", required: true },
+    {
+        key: "description",
+        label: "Thông tin",
+        type: "textarea",
+        required: true,
+    },
+]);
+const colDefs = [
+    {
+        key: "id",
+        header: "ID",
+    },
+    {
+        key: "name",
+        header: "Tên",
+    },
+    {
+        key: "deletedAt",
+        header: "Ngày xoá",
+    },
 ];
 // Importing props
 //Thay vì khai báo props trong export default defineComponent(),
@@ -104,12 +124,68 @@ const handleFormSubmit = async () => {
 </script>
 <template>
     <AdminTable
+        :col-defs="colDefs"
         title="Danh sách gói tập"
         :data="data"
         :on-delete="deleteUser"
         :on-edit="edit"
         :on-add="showAddModal"
-    />
+    >
+        <template #default="{ item }">
+            <div
+                class="columns is-multiline has-background-white my-1"
+                style="height: 100%"
+            >
+                <!-- Column for Fitness Package Details -->
+                <div class="column is-half">
+                    <p class="title is-6">Thông tin gói Fitness</p>
+                    <ul>
+                        <li><strong>ID:</strong> {{ item.id }}</li>
+                        <li><strong>Tên gói:</strong> {{ item.name }}</li>
+                        <li><strong>Mô tả:</strong> {{ item.description }}</li>
+                    </ul>
+                </div>
+
+                <!-- Column for Related Data -->
+                <div class="column is-half">
+                    <p class="title is-6">Thông tin liên quan</p>
+
+                    <!-- Trạng thái xóa -->
+                    <p>
+                        <strong>Trạng thái:</strong>
+                        <span v-if="item.deletedAt" class="tag is-danger"
+                            >Đã xóa</span
+                        >
+                        <span v-else class="tag is-success">Hoạt động</span>
+                    </p>
+
+                    <!-- Chi nhánh liên quan -->
+                    <p>
+                        <strong>Chi nhánh liên kết:</strong>
+                        <span
+                            v-for="branch in item.branches"
+                            :key="branch.id"
+                            class="tag is-link"
+                        >
+                            {{ branch.name }}
+                        </span>
+                    </p>
+
+                    <!-- Khuyến mãi liên quan -->
+                    <p>
+                        <strong>Khuyến mãi liên kết:</strong>
+                        <span
+                            v-for="promotion in item.promotions"
+                            :key="promotion.id"
+                            class="tag is-warning"
+                        >
+                            {{ promotion.name }}
+                        </span>
+                    </p>
+                </div>
+            </div>
+        </template>
+    </AdminTable>
 
     <ModalForm
         :submit-text="modalMode == 'edit' ? 'Sửa gói tập' : 'Thêm gói tập'"

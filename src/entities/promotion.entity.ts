@@ -5,6 +5,7 @@ import {
     ManyToMany,
     JoinTable,
     BaseEntity,
+    CreateDateColumn,
 } from "typeorm";
 import { FitnessPackage } from "@entities/fitness_package.entity";
 import { Branch } from "@entities/branch.entity";
@@ -29,19 +30,22 @@ export class Promotion extends BaseEntity {
     @Column("date")
     endDate: Date;
 
+    @CreateDateColumn()
+    createdAt: Date;
+
     @Column({ nullable: true, type: "datetime" })
-    deletedAt?: Date;
+    deletedAt: Date | null;
 
     // Quan hệ với chi nhánh
     @ManyToMany(() => Branch, branch => branch.promotions)
     @JoinTable()
     branches: Branch[];
 
-    // Quan hệ với loại phòng tập
+    // Quan hệ với gói tập
     @ManyToMany(
         () => FitnessPackage,
         fitnesspackage => fitnesspackage.promotions,
     )
     @JoinTable()
-    fitnesspackages: FitnessPackage[];
+    packages: FitnessPackage[];
 }

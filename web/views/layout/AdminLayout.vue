@@ -18,41 +18,43 @@ export default defineComponent({
     <!-- Main Admin Layout -->
     <div class="columns is-gapless">
         <!-- Sidebar Column -->
-        <div class="column is-narrow">
+        <div class="column is-narrow" style="position: fixed; overflow-y: auto">
             <SideBar />
         </div>
 
         <!-- Content Column -->
-        <div class="column">
+        <div class="column" style="margin-left: 250px; overflow-y: auto">
             <div class="section p-4">
-                <RouterView v-slot="{ Component }">
+                <RouterView v-slot="{ Component, route }">
                     <template v-if="Component">
                         <Transition mode="out-in">
-                            <KeepAlive>
-                                <Suspense>
-                                    <!-- Main Content -->
+                            <!-- <KeepAlive> -->
+                            <Suspense>
+                                <!-- Main Content -->
+                                <div :key="route.name">
                                     <component :is="Component" />
+                                </div>
 
-                                    <!-- Loading State -->
-                                    <template #fallback>
-                                        <Spinner />
-                                    </template>
+                                <!-- Loading State -->
+                                <template #fallback>
+                                    <Spinner />
+                                </template>
 
-                                    <!-- Error State -->
-                                    <template #error="{ error }">
-                                        <div class="notification is-danger">
-                                            <p>
-                                                <strong>Error:</strong>
-                                                {{ error.message }}
-                                            </p>
-                                            <p>
-                                                Something went wrong while
-                                                loading the page.
-                                            </p>
-                                        </div>
-                                    </template>
-                                </Suspense>
-                            </KeepAlive>
+                                <!-- Error State -->
+                                <template #error="{ error }">
+                                    <div class="notification is-danger">
+                                        <p>
+                                            <strong>Error:</strong>
+                                            {{ error.message }}
+                                        </p>
+                                        <p>
+                                            Something went wrong while loading
+                                            the page.
+                                        </p>
+                                    </div>
+                                </template>
+                            </Suspense>
+                            <!-- </KeepAlive> -->
                         </Transition>
                     </template>
                 </RouterView>

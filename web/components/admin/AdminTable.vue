@@ -7,23 +7,31 @@
         <div class="table-container mt-4">
             <table
                 class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth"
+                style="height: 1px"
             >
                 <thead>
                     <tr>
                         <th
-                            v-for="(key, index) in columnKeys"
+                            v-for="(key, index) in colDefs"
                             :key="index"
                             class="has-text-weight-semibold sticky-header"
                         >
-                            {{ key }}
+                            {{ key.header }}
                         </th>
                         <th class="sticky-header"></th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr v-for="(row, rowIndex) in data" :key="rowIndex">
-                        <td v-for="(value, key) in row" :key="key">
-                            {{ value }}
+                <tbody v-for="(row, rowIndex) in data" :key="rowIndex">
+                    <tr
+                        @click="
+                            () =>
+                                (currIndex =
+                                    currIndex == rowIndex ? null : rowIndex)
+                        "
+                        :class="{ 'is-selected': rowIndex == currIndex }"
+                    >
+                        <td v-for="col in colDefs" :key="col.key">
+                            {{ row[col.key] }}
                         </td>
                         <td class="is-actions-cell">
                             <!-- Edit Button -->
@@ -42,6 +50,18 @@
                             </button>
                         </td>
                     </tr>
+                    <tr
+                        class="child-row"
+                        :class="{ 'child-show': currIndex == rowIndex }"
+                    >
+                        <td
+                            v-show="currIndex == rowIndex"
+                            :colspan="colDefs.length + 1"
+                        >
+                            <!-- Slot for child content -->
+                            <slot :item="row" />
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </div>
@@ -53,12 +73,21 @@ import { ref, defineProps, watch } from "vue";
 
 // Define props for the component
 const props = defineProps({
+    colDefs: {
+        type: Array<{
+            key: string;
+            header: string;
+        }>,
+        required: true,
+    },
     title: { type: String, required: true },
     data: { type: Array<any>, required: true },
     onAdd: { type: Function, required: true },
     onEdit: { type: Function, required: true },
     onDelete: { type: Function, required: true },
 });
+
+const currIndex = ref<number | null>(null);
 
 const columnKeys = ref<string[]>([]);
 
@@ -80,7 +109,6 @@ watch(
 }
 
 .table-container {
-    max-height: 500px;
     overflow-y: auto;
     position: relative;
 }
@@ -92,5 +120,21 @@ watch(
     top: 0;
     background-color: white; /* Set background color to match the table */
     z-index: 1;
+}
+
+.child-row {
+    overflow: hidden;
+    -webkit-transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
+    -o-transition: all 0.3s ease;
+    height: 0;
+    transition: all 0.3s ease;
+}
+.child-row.child-show {
+    height: 350px;
+    -webkit-transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
+    -o-transition: all 0.3s ease;
+    transition: all 0.3s ease;
 }
 </style>
