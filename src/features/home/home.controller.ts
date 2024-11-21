@@ -33,7 +33,11 @@ class HomeController extends BaseController {
                 where: { id: ses?.id },
                 relations: ["profile"],
             });
-            res.locals.userFullName = user?.profile.name;
+            if (user) {
+                if (user.profile) {
+                    res.locals.userFullName = user?.profile.name;
+                }
+            }
             next();
         });
         this.router.get(this.getBasePath(), this.index);
