@@ -28,6 +28,21 @@ const formFields = [
         required: true,
     },
 ];
+
+const colDefs = [
+    {
+        key: "id",
+        header: "#",
+    },
+    {
+        key: "name",
+        header: "Tên",
+    },
+    {
+        key: "address",
+        header: "Địa chỉ",
+    },
+];
 // Importing props
 //Thay vì khai báo props trong export default defineComponent(),
 // chúng ta sử dụng defineProps để khai báo các props trong <script setup>.
@@ -124,12 +139,79 @@ const handleFormSubmit = async () => {
 <template>
     <div>
         <AdminTable
+            :col-defs="colDefs"
             title="Danh sách chi nhánh"
             :data="branches"
             :on-delete="deleteBranch"
             :on-edit="editBranch"
             :on-add="showAddModal"
-        />
+        >
+            <template #default="{ item }">
+                <div
+                    class="columns is-multiline has-background-white my-1"
+                    style="height: 100%"
+                >
+                    <!-- Column for Basic Details -->
+                    <div class="column is-half">
+                        <p class="title is-5">Thông tin chi nhánh</p>
+                        <ul>
+                            <li><strong>ID:</strong> {{ item.id }}</li>
+                            <li><strong>Tên:</strong> {{ item.name }}</li>
+                            <li>
+                                <strong>Địa chỉ:</strong> {{ item.address }}
+                            </li>
+                            <li><strong>Vĩ độ:</strong> {{ item.lat }}</li>
+                            <li><strong>Kinh độ:</strong> {{ item.lng }}</li>
+                        </ul>
+                    </div>
+
+                    <!-- Column for Related Data -->
+                    <div class="column is-half">
+                        <p class="title is-5">Thông tin bổ sung</p>
+
+                        <p>
+                            <strong>Trạng thái: </strong>
+                            <span v-if="item.deletedAt" class="tag is-danger"
+                                >Đã xóa</span
+                            >
+                            <span v-else class="tag is-success">Hoạt động</span>
+                        </p>
+
+                        <p>
+                            <strong>Người dùng:</strong>
+                            {{ item.users && item.users.length }} người
+                        </p>
+                        <p>
+                            <strong>Gói tập:</strong>
+                            {{item.fitnesspackages && item.fitnesspackages.length || 0 }} gói
+                        </p>
+                        <p>
+                            <strong>Khuyến mãi:</strong>
+                            {{ item.promotions && item.promotions.length || 0 }} chương trình
+                        </p>
+
+                        <!-- Tags for Fitness Packages and Promotions -->
+                        <div
+                            v-if="item.fitnesspackages || item.promotions"
+                            class="tags"
+                        >
+                            <span
+                                v-for="p in item.fitnesspackages"
+                                :key="p.id"
+                                class="tag is-info"
+                                >{{ p.name }}</span
+                            >
+                            <span
+                                v-for="promotion in item.promotions"
+                                :key="promotion.id"
+                                class="tag is-primary"
+                                >{{ promotion.name }}</span
+                            >
+                        </div>
+                    </div>
+                </div>
+            </template>
+        </AdminTable>
 
         <ModalForm
             :submit-text="

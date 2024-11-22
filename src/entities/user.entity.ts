@@ -3,6 +3,7 @@ import {
     BeforeInsert,
     BeforeUpdate,
     Column,
+    CreateDateColumn,
     Entity,
     JoinColumn,
     ManyToOne,
@@ -26,7 +27,10 @@ export class User extends BaseEntity {
     password: string;
 
     @Column({ nullable: true, type: "datetime" })
-    deletedAt?: Date;
+    deletedAt: Date | null;
+
+    @CreateDateColumn()
+    createdAt: Date;
 
     // @Column({
     //     type: "simple-enum",
@@ -47,7 +51,6 @@ export class User extends BaseEntity {
     branch: Branch;
 
     @BeforeInsert()
-    @BeforeUpdate()
     updatePassword() {
         this.password = bcrypt.hashSync(this.password, 10);
     }

@@ -1,7 +1,6 @@
 import { Router, Request, Response, NextFunction } from "express";
 import { renderToString } from "@vue/server-renderer";
 import { Component, createSSRApp } from "vue";
-import Logger from "@config/logger";
 
 export abstract class BaseController {
     public router: Router = Router();

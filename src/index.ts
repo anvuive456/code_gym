@@ -7,6 +7,7 @@ import path from "path";
 import AdminController from "@features/admin/admin.controller";
 import HomeController from "@features/home/home.controller";
 import UserController from "@features/user/user.controller";
+import { ReportController } from "@features/admin/report.controller";
 
 export async function main() {
     dotenv.config();
@@ -54,6 +55,7 @@ export async function main() {
     app.use(new AdminController().router);
     app.use(new HomeController().router);
     app.use(new UserController().router);
+    app.use(new ReportController().router);
 
     app.listen(port, () => {
         Logger.info(`Server is up and running @ http://localhost:${port}`);
