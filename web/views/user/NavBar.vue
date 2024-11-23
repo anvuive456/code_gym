@@ -1,19 +1,15 @@
-<script lang="ts">
-import { defineComponent, onMounted, onBeforeUnmount } from 'vue';
+<script setup lang="ts">
+import { defineComponent, onMounted, onBeforeUnmount, watchEffect } from 'vue';
+import useSession from '../../hooks/useSession';
 
-export default defineComponent({
-    name: 'NavBar',
-    props:{
-        userFullName: {
-            type: String,
-            required: true,
-        }
-    },
-    setup() {
+  
+         const session =useSession();
+        watchEffect(()=>{
+            console.log('session data::',session.sessionData);
+        })
         const toggleNavbarMethod = () => {
             if (window.innerWidth > 992) {
-                const dropdowns = document.querySelectorAll('.navbar .dropdown');
-
+                const dropdowns = document.querySelectorAll('.navbar .dropdown'); 
                 dropdowns.forEach((dropdown) => {
                     dropdown.addEventListener('mouseover', handleMouseOver);
                     dropdown.addEventListener('mouseout', handleMouseOut);
@@ -46,6 +42,7 @@ export default defineComponent({
 
         onMounted(() => {
             toggleNavbarMethod();
+            session.fetchSession();
             window.addEventListener('resize', toggleNavbarMethod);
         });
 
@@ -53,11 +50,7 @@ export default defineComponent({
             removeDropdownListeners();
             window.removeEventListener('resize', toggleNavbarMethod);
         });
-
-
-    },
-
-});
+ 
 </script>
 
 <template>
@@ -79,14 +72,14 @@ export default defineComponent({
                     <a href="/branch" class="nav-item nav-link" >Chi nhánh</a>
                     <a href="/contact" class="nav-item nav-link" >Contact</a>
 
-                    <template v-if="userFullName">
+                    <template v-if="session.sessionData.value?.fullname" >
                         <div class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" id="profileDropdown" role="button"
                                data-toggle="dropdown">
-                                Xin chào, {{ userFullName }}
+                                Xin chào, {{ session.sessionData.value?.fullname }}
                             </a>
                             <ul class="dropdown-menu text-capitalize" aria-labelledby="profileDropdown">
-                                <li><a class="dropdown-item" href="/profile">Hồ sơ</a></li>
+                                <li><a class="dropdown-item" href="/user/profile">Hồ sơ</a></li>
                                 <li><a class="dropdown-item" href="/schedule">Lịch trình</a></li>
                                 <li>
                                     <hr class="dropdown-divider">
@@ -96,7 +89,7 @@ export default defineComponent({
                         </div>
                     </template>
                     <template v-else>
-                        <a href="/signin" class="btn btn-primary mr-4">Đăng nhập</a>
+                        <a  href="/signin" class="btn btn-primary mr-4">Đăng nhập</a>
                         <a href="/signup" class="btn btn-outline-light">Đăng ký</a>
                     </template>
                 </div>

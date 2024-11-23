@@ -90,9 +90,19 @@ export const routes: RouteRecordRaw[] = [
         component: () => import("./views/user/SignIn.vue"),
     },
     {
+        path: "/user/signup",
+        name: "SignUpUser",
+        component: () => import("./views/user/SignUp.vue"),
+    },
+    {
         path: "/user/dash",
         name: "HomeUser",
         component: () => import("./views/user/Home.vue"),
+    },
+    {
+        path: "/user/profile",
+        name: "ProfileUser",
+        component: () => import("./views/user/ProfileUser.vue"),
     },
     // Add more routes as needed
 ];

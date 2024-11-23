@@ -64,7 +64,7 @@ export default defineComponent({
             </div>
             <p v-if="errorMessage">{{ errorMessage }}</p>
 
-            <button type="submit" class="btn btn-primary btn-block">Đăng ký</button>
+            <button type="submit" class="btn btn-primary btn-block">Đăng nhập</button>
         </form>
     </div>
 

@@ -22,20 +22,6 @@ class HomeController extends BaseController {
     }
 
     protected initRoutes(): void {
-        this.router.use(async (req, res, next) => {
-            res.locals.active = req.path;
-            const message = req.query.message;
-            if (message) {
-                res.locals.message = message;
-            }
-            const ses = req.session.user;
-            const user = await req.db.getRepository(User).findOne({
-                where: { id: ses?.id },
-                relations: ["profile"],
-            });
-            // res.locals.userFullName = user?.profile.name;
-            next();
-        });
         this.router.get(this.getBasePath(), this.index);
         this.router.get(`${this.getBasePath()}/home`, this.viewHome);
         this.router.get(`${this.getBasePath()}/about`, this.viewAbout);

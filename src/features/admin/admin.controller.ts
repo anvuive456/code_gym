@@ -448,11 +448,11 @@ class AdminController extends BaseController {
             username: username,
             role: Role.admin,
         });
-        if(!user) {
+        if (!user) {
             res.status(404).json({
-                message:'Không tìm thấy người dùng'
-            })
-            return ;
+                message: "Không tìm thấy người dùng",
+            });
+            return;
         }
 
         if (!bcrypt.compareSync(password, user.password)) {

@@ -8,7 +8,10 @@ import bcrypt from "bcrypt";
 import SignIn from "../../../web/views/user/SignIn.vue";
 import Home from "../../../web/views/user/Home.vue";
 import About from "../../../web/views/user/About.vue";
+import SignUp from "../../../web/views/user/SignUp.vue";
+import ProfileUser from "../../../web/views/user/ProfileUser.vue";
 import { Role } from "@entities/role.entity";
+import { Profile } from "@entities/profile.entity";
 
 class UserController extends BaseController {
     protected getBasePath(): string {
@@ -17,8 +20,15 @@ class UserController extends BaseController {
 
     protected initRoutes(): void {
         this.router.get(`${this.getBasePath()}/signin`, this.signInView);
-        this.router.get(`${this.getBasePath()}/dash`, this.signInViewDash);
         this.router.post(`${this.getBasePath()}/signin`, this.signIn);
+
+        this.router.get(`${this.getBasePath()}/profile`, this.profileView);
+        ///session
+        this.router.get(`/session`, this.getSession);
+
+        this.router.get(`${this.getBasePath()}/signup`, this.signUpView);
+        this.router.post(`${this.getBasePath()}/signup`, this.signUp);
+        this.router.get(`${this.getBasePath()}/dash`, this.signInViewDash);
         // this.router.post(`${this.getBasePath()}/signin`,(req)=>{}, this.signIn);
         this.router.get(`${this.getBasePath()}/`, this.viewHomePage);
     }
@@ -93,34 +103,104 @@ class UserController extends BaseController {
     //         res.json({ message: "Đăng xuất thành công" });
     //     });
     // }
-
+    private async profileView(req: Request, res: Response) {
+        return super.renderVue(req, res, ProfileUser);
+    }
+    private async signUpView(req: Request, res: Response) {
+        return super.renderVue(req, res, SignUp);
+    }
     private async signIn(req: Request, res: Response) {
         const db = req.db;
-        const { username, password } = req.body;
-        const user = await db.getRepository(User).findOne({
-            where: {
-                username,
-            },
+        const { username, password, name, email, gender, phone } = req.body;
+        const user = await db.getRepository(User).findOneBy({
+            username: username,
+            // role: Role.user,
         });
         console.log("han user", user);
-
-        // if (user == null) {
-        //     //|| !bcrypt.compareSync(password, user.password)
-
-        //     res.status(401).send("Profile not found");
-        //     console.log("han tyest failed");
+        if (!user) {
+            res.status(404).json({
+                message: "Không tìm thấy người dùng",
+            });
+            return;
+        }
+        // if (!bcrypt.compareSync(password, user.password)) {
+        //     res.status(401).json({
+        //         message: "Sai mật khẩu",
+        //     });
         //     return;
         // }
 
-        // req.session.user = user;
-        // req.session.save();
-        if (user != null) {
-            res.status(200).json({
-                message: "Đăng nhập thành công",
-            });
-            console.log("han tyest success");
-            return res.redirect("/user/dash");
+        res.status(200).json({
+            message: "Đăng nhập thành công",
+        });
+        const hashedPassword = bcrypt.hashSync(password, 10);
+        const newUser = new User();
+        newUser.username = username;
+        newUser.password = hashedPassword;
+        newUser.role = Role.user;
+        const data = await db.getRepository(User).save(newUser); //
+        req.session.user = {
+            id: user.id,
+            role: user.role,
+            username: user.username,
+        };
+        req.session.user = data;
+        req.session.save();
+        console.log("han data", data);
+    }
+    private async getSession(req: Request, res: Response) {
+        const session = req.session.user;
+        const user = await User.findOne({
+            where: { id: session?.id },
+            relations: ["profile"],
+        });
+        console.log("UserController ~ getSession ~ user:", user);
+        res.status(200).json({
+            username: user?.username,
+            email: user?.profile?.email,
+            fullname: user?.profile?.name,
+            phone: user?.profile?.phone,
+        });
+    }
+    private async signUp(req: Request, res: Response) {
+        const db = req.db;
+        const { username, password, email, gender, phone, name } = req.body;
+        const user = await db.getRepository(User).findOneBy({
+            username: username,
+            // role: Role.user,
+        });
+        console.log("nname", user);
+        if (user) {
+            res.status(400).json({ message: "Tên người dùng đã tồn tại" });
+            return;
         }
+        const profile = new Profile();
+        profile.name = name;
+        profile.email = email;
+        profile.gender = gender;
+        profile.photo = "";
+        profile.phone = phone;
+        await db.getRepository(Profile).save(profile);
+
+        const hashedPassword = bcrypt.hashSync(password, 10);
+
+        const newUser = new User();
+        newUser.username = username;
+        newUser.password = hashedPassword;
+        newUser.role = Role.user;
+        newUser.profile = profile;
+
+        console.log("han user", user);
+        try {
+            const data = await db.getRepository(User).save(newUser); // Lưu thông tin người dùng
+            req.session.user = data;
+            req.session.save();
+
+            res.status(201).json({ message: "Đăng ký thành công" }); // Trả về phản hồi khi đăng ký thành công
+        } catch (error) {
+            res.status(500).json({ message: "Đã có lỗi xảy ra" });
+        }
+        // console.log("han tyest success");
     }
     // private async signIn(req: Request, res: Response) {
     //     const { username, password } = req.body;
