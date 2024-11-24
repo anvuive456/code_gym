@@ -25,6 +25,8 @@ onMounted(() => {
         :email="session.sessionData.value?.email || ''"
         :phone="session.sessionData.value?.phone || ''"
         :gender="session.sessionData.value?.gender || ''"
+        :branch="session.sessionData.value?.branch||''" 
+        :fitnessPackage="session.sessionData.value?.fitnessPackage||''" 
     />
 
     <Footer />

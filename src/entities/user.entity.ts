@@ -14,6 +14,7 @@ import { Profile } from "@entities/profile.entity";
 import { Role } from "@entities/role.entity";
 import { Branch } from "@entities/branch.entity";
 import bcrypt from "bcrypt";
+import { FitnessPackage } from "./fitness_package.entity";
 
 @Entity({ engine: "InnoDB", name: "users" })
 export class User extends BaseEntity {
@@ -48,7 +49,11 @@ export class User extends BaseEntity {
     profile: Profile;
 
     @ManyToOne(() => Branch, branch => branch.users)
-    branch: Branch;
+    branch: Branch; 
+    
+    @OneToOne(() => FitnessPackage, fitnessPackage => fitnessPackage.name, { onDelete: "CASCADE" })
+    @JoinColumn()
+    fitnessPackage: FitnessPackage; 
 
     @BeforeInsert()
     updatePassword() {

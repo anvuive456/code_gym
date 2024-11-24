@@ -10,6 +10,8 @@ export default function useSession() {
         phone: string;
         email: string;
         gender: string;
+        branch:string;
+        fitnessPackage:string;
     }>();
 
     async function fetchSession() {

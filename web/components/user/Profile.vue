@@ -1,4 +1,4 @@
-<script setup lang="ts">
+le<script setup lang="ts">
 import { ref, toRef } from "vue";
 
 const props = defineProps<{
@@ -7,6 +7,8 @@ const props = defineProps<{
     email: string;
     phone: string;
     gender: string;
+    branch: string;
+    fitnessPackage: string;
 }>();
 
 // Trạng thái chỉnh sửa và giá trị
@@ -80,6 +82,17 @@ const saveChanges = () => {
                 <div class="table-cell label">Giới tính:</div>
                 <div class="table-cell value">
                     {{ gender === "male" ? "Nam" : "Nữ" }}
+                </div>
+            </div><div class="table-row">
+                <div class="table-cell label">Chi nhánh</div>
+                <div class="table-cell value"> 
+                {{ props.fitnessPackage }}
+                    
+                </div>
+            </div><div class="table-row">
+                <div class="table-cell label">Gói tập</div>
+                <div class="table-cell value">
+                    {{ "Tập kèm PT" }}
                 </div>
             </div>
         </div>

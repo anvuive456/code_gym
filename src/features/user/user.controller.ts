@@ -168,6 +168,9 @@ class UserController extends BaseController {
             email: user?.profile?.email,
             fullname: user?.profile?.name,
             phone: user?.profile?.phone,
+            branch:user?.branch.name,
+            fitnesspackage:user?.fitnessPackage
+            
         });
     }
     private async signUp(req: Request, res: Response) {
