@@ -1,5 +1,5 @@
 import { BaseController } from "@interfaces/controller.interface";
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { SignUpDTO } from "../../dto/sign-up.dto";
 import { User } from "@entities/user.entity";
 import { Role } from "@entities/role.entity";
@@ -15,6 +15,7 @@ import Blog from "../../../web/views/user/Blog.vue";
 import Branch from "../../../web/views/user/Branch.vue";
 import SignIn from "../../../web/views/user/SignIn.vue";
 import bcrypt from "bcrypt";
+import { userAuthMiddleware } from "@middlewares/auth.middleware";
 
 class HomeController extends BaseController {
     protected getBasePath(): string {
@@ -48,26 +49,52 @@ class HomeController extends BaseController {
         this.router.get(`${this.getBasePath()}/signin`, this.viewSignIn);
         this.router.post(`${this.getBasePath()}/signin`, this.signIn);
         this.router.get(`${this.getBasePath()}/signout`, this.signOut);
-        this.router.get(`${this.getBasePath()}/profile`, this.viewProfile);
-        this.router.post(`${this.getBasePath()}/update-profile`, this.updateProfile);
-        this.router.post(`${this.getBasePath()}/update-photo`, upload.single("photo"), this.updateLogo);
+
+        this.router.get(
+            `${this.getBasePath()}/profile`,
+            userAuthMiddleware,
+            this.viewProfile,
+        );
+        this.router.post(
+            `${this.getBasePath()}/update-profile`,
+            this.updateProfile,
+        );
+        this.router.post(
+            `${this.getBasePath()}/update-photo`,
+            upload.single("photo"),
+            this.updateLogo,
+        );
     }
 
     private async viewHome(req: Request, res: Response): Promise<void> {
         const db = req.db;
-        await super.renderVue(req, res, Home, {}, {
-            title: "Trang chủ",
-        });
+        await super.renderVue(
+            req,
+            res,
+            Home,
+            {},
+            {
+                title: "Trang chủ",
+            },
+        );
     }
 
     private async viewAbout(req: Request, res: Response): Promise<void> {
-        return super.renderVue(req, res, About, {
-            branches: [{
-                name: "hello world",
-            }],
-        }, {
-            title: "Về chúng tôi",
-        });
+        return super.renderVue(
+            req,
+            res,
+            About,
+            {
+                branches: [
+                    {
+                        name: "hello world",
+                    },
+                ],
+            },
+            {
+                title: "Về chúng tôi",
+            },
+        );
     }
 
     private async viewFeature(req: Request, res: Response) {
@@ -116,7 +143,7 @@ class HomeController extends BaseController {
         // Create a profile for the user
         const profile = new Profile();
         profile.name = name;
-        profile.email  = email;
+        profile.email = email;
         profile.gender = gender;
         profile.photo = "";
         profile.phone = phone;
@@ -136,7 +163,7 @@ class HomeController extends BaseController {
             role: result.role,
         };
 
-        res.redirect('/home');
+        res.redirect("/home");
     }
 
     private async viewProfile(req: Request, res: Response) {
@@ -154,11 +181,13 @@ class HomeController extends BaseController {
         });
     }
 
-    private async updateProfile(req: Request<{}, {}, UpdateProfileDto>, res: Response) {
+    private async updateProfile(
+        req: Request<{}, {}, UpdateProfileDto>,
+        res: Response,
+    ) {
         const body = req.body;
         const db = req.db;
         const ses = req.session.user;
-
     }
 
     private async updateLogo(req: Request, res: Response) {
@@ -185,11 +214,11 @@ class HomeController extends BaseController {
         }
     }
 
-    private async signOut(req: Request, res: Response) {
-        req.session.destroy((err) => {
-            if (err) return res.status(500).json({ message: "Không thể đăng xuất" });
-            res.clearCookie("connect.sid"); // Xóa cookie session
-            res.json({ message: "Đăng xuất thành công" });
+    private signOut(req: Request, res: Response, next: NextFunction) {
+        req.session.destroy(e => {
+            res.status(200).json({
+                message: "Đăng xuất thành công",
+            });
         });
     }
 
@@ -213,12 +242,9 @@ class HomeController extends BaseController {
         req.session.save();
 
         res.status(200).json({
-            message:'Đăng nhập thành công'
-        })
-
-
+            message: "Đăng nhập thành công",
+        });
     }
 }
-
 
 export default HomeController;

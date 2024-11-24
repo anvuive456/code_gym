@@ -11,18 +11,17 @@ export default defineComponent({
     data: function () {
         return {
             username: "",
+            role: "user",
             password: "",
             errorMessage: "",
         };
     },
-    props: {
-        userFullName: String,
-    },
+
     components: { Footer, Header, NavBar, Carousel, TimeTable },
     methods: {
         async login() {
             try {
-                const response = await fetch("/signin", {
+                const response = await fetch("/user/signin", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
@@ -31,8 +30,13 @@ export default defineComponent({
                     }),
                 });
 
-                if (!response.ok) throw new Error("Đăng nhập thất bại");
-                this.$router.push("/home"); // Điều hướng đến trang yêu cầu đăng nhập
+                // Kiểm tra xem request có thành công hay không
+                const data = await response.json();
+                if (!response.ok) {
+                    this.errorMessage = data.message || "Đăng nhập thất bại";
+                } else {
+                    this.$router.push("/home"); // Điều hướng đến trang
+                }
             } catch (error: any) {
                 this.errorMessage = error.message;
             }
@@ -42,7 +46,7 @@ export default defineComponent({
 </script>
 
 <template>
-    <NavBar :user-full-name="userFullName || ''" />
+    <NavBar />
     <Header title="Đăng nhập" />
     <div class="w-50 mx-auto my-4">
         <form @submit.prevent="login" method="POST">
@@ -71,7 +75,7 @@ export default defineComponent({
             <p v-if="errorMessage">{{ errorMessage }}</p>
 
             <button type="submit" class="btn btn-primary btn-block">
-                Đăng ký
+                Đăng nhập
             </button>
         </form>
     </div>
