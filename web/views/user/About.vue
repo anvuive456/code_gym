@@ -18,7 +18,7 @@ defineProps<{
 <template>
     <div>
         <BackToTopButton/>
-        <NavBar/>
+        <NavBar user-full-name="fjkdslf"/>
         <Header title="Về chúng tôi"/>
 
         <!-- About Start -->

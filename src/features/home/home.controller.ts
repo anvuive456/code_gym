@@ -23,20 +23,6 @@ class HomeController extends BaseController {
     }
 
     protected initRoutes(): void {
-        this.router.use(async (req, res, next) => {
-            res.locals.active = req.path;
-            const message = req.query.message;
-            if (message) {
-                res.locals.message = message;
-            }
-            const ses = req.session.user;
-            const user = await req.db.getRepository(User).findOne({
-                where: { id: ses?.id },
-                relations: ["profile"],
-            });
-            res.locals.userFullName = user?.profile.name;
-            next();
-        });
         this.router.get(this.getBasePath(), this.index);
         this.router.get(`${this.getBasePath()}/home`, this.viewHome);
         this.router.get(`${this.getBasePath()}/about`, this.viewAbout);
@@ -49,7 +35,6 @@ class HomeController extends BaseController {
         this.router.get(`${this.getBasePath()}/signin`, this.viewSignIn);
         this.router.post(`${this.getBasePath()}/signin`, this.signIn);
         this.router.get(`${this.getBasePath()}/signout`, this.signOut);
-
         this.router.get(
             `${this.getBasePath()}/profile`,
             userAuthMiddleware,
@@ -215,6 +200,8 @@ class HomeController extends BaseController {
     }
 
     private signOut(req: Request, res: Response, next: NextFunction) {
+        res.setHeader("Last-Modified", new Date().toUTCString());
+
         req.session.destroy(e => {
             res.status(200).json({
                 message: "Đăng xuất thành công",
@@ -225,13 +212,15 @@ class HomeController extends BaseController {
     private async signIn(req: Request, res: Response) {
         const db = req.db;
         const { username, password } = req.body;
+        console.log("user admin", username);
         const user = await db.getRepository(User).findOne({
             where: {
                 username,
             },
         });
 
-        if (!user || !bcrypt.compareSync(password, user.password)) {
+        if (!user) {
+            // || !bcrypt.compareSync(password, user.password)
             res.status(401).json({
                 message: "Đăng nhập thất bại",
             });

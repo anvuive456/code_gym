@@ -101,8 +101,13 @@ class AdminController extends BaseController {
 
         //Packages
         this.router.post(`${this.getBasePath()}/packages`, async (req, res) => {
+            const { branchId, deleted = false } = req.body;
+
             const data = await FitnessPackage.find({
                 where: {
+                    branches: {
+                        id: branchId,
+                    },
                     deletedAt: undefined,
                 },
             });
@@ -445,12 +450,19 @@ class AdminController extends BaseController {
 
         const db = req.db;
         const user = await db.getRepository(User).findOneBy({
-            username,
+            username: username,
             role: Role.admin,
         });
-        if (!user || !bcrypt.compareSync(password, user.password)) {
+        if (!user) {
+            res.status(404).json({
+                message: "Không tìm thấy người dùng",
+            });
+            return;
+        }
+
+        if (!bcrypt.compareSync(password, user.password)) {
             res.status(401).json({
-                message: "Đăng nhập thất bại",
+                message: "Sai mk",
             });
             return;
         }

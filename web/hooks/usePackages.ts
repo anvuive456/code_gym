@@ -10,11 +10,18 @@ export default function usePackages() {
     const loading = ref(false);
     const error = ref<string>();
 
-    const fetchPackages = async () => {
+    const fetchPackages = async (options?: { branchId?: number }) => {
         loading.value = true;
 
         const res = await fetch("/admin/packages", {
             method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+            },
+            body: JSON.stringify({
+                branchId: options?.branchId,
+            }),
         });
         if (!res.ok) {
             error.value = "Không thể load gói tập";

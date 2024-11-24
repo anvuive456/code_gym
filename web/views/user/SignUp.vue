@@ -1,7 +1,95 @@
 <script setup lang="ts">
-import Header from "./Header.vue";
+import TimeTable from "../../components/TimeTable.vue";
 import NavBar from "./NavBar.vue";
+import Carousel from "../../components/Carousel.vue";
+import { onMounted, ref, watch } from "vue";
+import Header from "./Header.vue";
 import Footer from "./Footer.vue";
+
+import { useRouter } from "vue-router";
+import useBranches from "../../hooks/useBranches";
+import usePackages from "../../hooks/usePackages";
+
+const { branches, fetchBranches, loading: loadingBranches } = useBranches();
+const { packages, fetchPackages, loading: loadingPackages } = usePackages();
+// Các bước
+const steps = ref([
+    { label: "Thông tin" },
+    { label: "Chọn chi nhánh" },
+    { label: "Chọn gói tập" },
+]);
+
+const currentStep = ref(0);
+
+const username = ref("");
+const password = ref("");
+const email = ref("");
+const fullName = ref("");
+const phone = ref("");
+const gender = ref("");
+const branch = ref();
+const fitnessPackage = ref();
+
+const errorMessage = ref("");
+
+const router = useRouter();
+
+// Điều hướng giữa các bước
+const goToStep = (index: number) => {
+    if (index >= 0 && index < steps.value.length) {
+        currentStep.value = index;
+    }
+};
+
+const prevStep = () => {
+    if (currentStep.value > 0) {
+        currentStep.value -= 1;
+    }
+};
+
+const nextStep = () => {
+    if (currentStep.value < steps.value.length - 1) {
+        currentStep.value += 1;
+    } else {
+        register();
+    }
+};
+
+watch(branch, async b => {
+    await fetchPackages({ branchId: b });
+});
+
+onMounted(async () => {
+    await fetchBranches();
+});
+
+const register = async () => {
+    try {
+        const response = await fetch("/user/signup", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                username: username.value,
+                password: password.value,
+                email: email.value,
+                name: fullName.value,
+                phone: phone.value,
+                gender: gender.value,
+                branch: branch.value,
+                package: fitnessPackage.value,
+            }),
+        });
+
+        const data = await response.json();
+        if (!response.ok) {
+            errorMessage.value = data.message || "Đăng ký thất bại";
+        } else {
+            router.push("/home");
+        }
+    } catch (error: any) {
+        errorMessage.value = error.message || "Lỗi kết nối!";
+    }
+};
 </script>
 
 <template>
@@ -139,7 +227,7 @@ import Footer from "./Footer.vue";
                             >
                             <select
                                 v-if="!loadingBranches"
-                                class="form-select"
+                                class="custom-select"
                                 id="branch"
                                 v-model="branch"
                                 required
@@ -174,7 +262,7 @@ import Footer from "./Footer.vue";
                             >
                             <select
                                 v-if="!loadingPackages"
-                                class="form-select"
+                                class="custom-select"
                                 id="package"
                                 v-model="fitnessPackage"
                             >
@@ -221,4 +309,31 @@ import Footer from "./Footer.vue";
     <Footer />
 </template>
 
-<style scoped></style>
+<style scoped>
+.custom-select {
+    background-color: #f8f9fa; /* Light gray background */
+    border: 2px solid;
+    border-radius: 8px; /* Rounded corners */
+    padding: 5px; /* Padding inside */
+    font-size: 16px; /* Adjust font size */
+    color: #495057; /* Text color */
+    appearance: none; /* Hide default arrow */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'%3E%3Cpath fill='%23007bff' d='M2 0L0 2h4z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 12px 12px;
+    transition:
+        border-color 0.3s ease,
+        box-shadow 0.3s ease;
+}
+
+.custom-select:focus {
+    border-color: #0056b3; /* Darker blue */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Blue shadow */
+    outline: none; /* Remove default outline */
+}
+
+.custom-select option {
+    font-size: 16px; /* Adjust font size for options */
+}
+</style>

@@ -38,7 +38,7 @@ export default defineComponent({
                     this.$router.push("/home"); // Điều hướng đến trang
                 }
             } catch (error: any) {
-                this.errorMessage = error.message;
+                this.errorMessage = error.message || "Lỗi kết nối!";
             }
         },
     },

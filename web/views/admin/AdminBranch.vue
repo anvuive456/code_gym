@@ -179,15 +179,15 @@ const handleFormSubmit = async () => {
 
                         <p>
                             <strong>Người dùng:</strong>
-                            {{ item.users.length }} người
+                            {{ item.users && item.users.length }} người
                         </p>
                         <p>
                             <strong>Gói tập:</strong>
-                            {{ item.fitnesspackages.length || 0 }} gói
+                            {{item.fitnesspackages && item.fitnesspackages.length || 0 }} gói
                         </p>
                         <p>
                             <strong>Khuyến mãi:</strong>
-                            {{ item.promotions.length || 0 }} chương trình
+                            {{ item.promotions && item.promotions.length || 0 }} chương trình
                         </p>
 
                         <!-- Tags for Fitness Packages and Promotions -->

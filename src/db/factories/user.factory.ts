@@ -3,7 +3,7 @@ import { define } from "typeorm-seeding";
 import { User } from "@entities/user.entity";
 import { faker } from "@faker-js/faker";
 
-import * as bcrypt from "bcrypt";
+import bcrypt from "bcrypt";
 
 define(User, () => {
     const user = new User();
