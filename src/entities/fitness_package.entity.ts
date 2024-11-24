@@ -7,6 +7,7 @@ import {
     BaseEntity,
     CreateDateColumn,
     ManyToOne,
+    OneToMany,
 } from "typeorm";
 import { Promotion } from "@entities/promotion.entity";
 import { Branch } from "@entities/branch.entity";
@@ -34,7 +35,7 @@ export class FitnessPackage extends BaseEntity {
     promotions: Promotion[];
 
     // Quan hệ với user
-    @ManyToOne(() => User, e => e.fitnessPackage)
+    @OneToMany(() => User, e => e.fitnessPackage)
     user: User[];
     @ManyToMany(() => Branch, branch => branch.fitnesspackages)
     branches: Branch[];

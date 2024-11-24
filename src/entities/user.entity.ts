@@ -23,7 +23,6 @@ export class User extends BaseEntity {
 
     @Column({ name: "username" })
     username: string;
-
     @Column({ name: "password" })
     password: string;
 
@@ -49,11 +48,13 @@ export class User extends BaseEntity {
     profile: Profile;
 
     @ManyToOne(() => Branch, branch => branch.users)
-    branch: Branch; 
-    
-    @OneToOne(() => FitnessPackage, fitnessPackage => fitnessPackage.name, { onDelete: "CASCADE" })
+    branch: Branch;
+
+    @ManyToOne(() => FitnessPackage, fitnessPackage => fitnessPackage.user, {
+        onDelete: "CASCADE",
+    })
     @JoinColumn()
-    fitnessPackage: FitnessPackage; 
+    fitnessPackage: FitnessPackage;
 
     @BeforeInsert()
     updatePassword() {

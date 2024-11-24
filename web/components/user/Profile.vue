@@ -1,4 +1,5 @@
 le<script setup lang="ts">
+import { as } from "@faker-js/faker/dist/airline-BLb3y-7w";
 import { ref, toRef } from "vue";
 
 const props = defineProps<{
@@ -10,6 +11,14 @@ const props = defineProps<{
     branch: string;
     fitnessPackage: string;
 }>();
+const updateProfile =async()=>{ 
+     await fetch('/update-profile-user',{method:"PUT",body:JSON.stringify({email:email.value,
+        phone:phone.value,
+        gender:props.gender
+        ,branch:props.branch,
+        fitnessPackage:props.fitnessPackage 
+    }),headers:{"content-type":"application/json"}})  
+}
 
 // Trạng thái chỉnh sửa và giá trị
 const isEditing = ref(false);
@@ -86,13 +95,12 @@ const saveChanges = () => {
             </div><div class="table-row">
                 <div class="table-cell label">Chi nhánh</div>
                 <div class="table-cell value"> 
-                {{ props.fitnessPackage }}
-                    
+                {{ props.branch }} 
                 </div>
             </div><div class="table-row">
                 <div class="table-cell label">Gói tập</div>
                 <div class="table-cell value">
-                    {{ "Tập kèm PT" }}
+                    {{ props.fitnessPackage }} 
                 </div>
             </div>
         </div>
@@ -101,7 +109,7 @@ const saveChanges = () => {
             <button
                 v-if="isEditing"
                 class="btn btn-primary"
-                @click="saveChanges"
+                @click="updateProfile"
             >
                 Lưu thay đổi
             </button>
