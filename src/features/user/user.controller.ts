@@ -12,6 +12,7 @@ import SignUp from "../../../web/views/user/SignUp.vue";
 import ProfileUser from "../../../web/views/user/ProfileUser.vue";
 import { Role } from "@entities/role.entity";
 import { Profile } from "@entities/profile.entity";
+import { userAuthMiddleware } from "@middlewares/auth.middleware";
 
 class UserController extends BaseController {
     protected getBasePath(): string {
@@ -22,7 +23,11 @@ class UserController extends BaseController {
         this.router.get(`${this.getBasePath()}/signin`, this.signInView);
         this.router.post(`${this.getBasePath()}/signin`, this.signIn);
 
-        this.router.get(`${this.getBasePath()}/profile`, this.profileView);
+        this.router.get(
+            `${this.getBasePath()}/profile`,
+            userAuthMiddleware,
+            this.profileView,
+        );
         ///session
         this.router.get(`/session`, this.getSession);
 
@@ -111,7 +116,7 @@ class UserController extends BaseController {
     }
     private async signIn(req: Request, res: Response) {
         const db = req.db;
-        const { username, password, name, email, gender, phone } = req.body;
+        const { username, password } = req.body;
         const user = await db.getRepository(User).findOneBy({
             username: username,
             // role: Role.user,
@@ -123,33 +128,36 @@ class UserController extends BaseController {
             });
             return;
         }
-        // if (!bcrypt.compareSync(password, user.password)) {
-        //     res.status(401).json({
-        //         message: "Sai mật khẩu",
-        //     });
-        //     return;
-        // }
+        if (!bcrypt.compareSync(password, user.password)) {
+            res.status(401).json({
+                message: "Sai mật khẩu",
+            });
+            return;
+        }
 
-        res.status(200).json({
-            message: "Đăng nhập thành công",
-        });
-        const hashedPassword = bcrypt.hashSync(password, 10);
-        const newUser = new User();
-        newUser.username = username;
-        newUser.password = hashedPassword;
-        newUser.role = Role.user;
-        const data = await db.getRepository(User).save(newUser); //
         req.session.user = {
             id: user.id,
             role: user.role,
             username: user.username,
         };
-        req.session.user = data;
+
         req.session.save();
-        console.log("han data", data);
+
+        res.status(200).json({
+            message: "Đăng nhập thành công",
+        });
     }
     private async getSession(req: Request, res: Response) {
         const session = req.session.user;
+        if (!session) {
+            res.status(200).json({
+                username: null,
+                email: null,
+                fullname: null,
+                phone: null,
+            });
+            return;
+        }
         const user = await User.findOne({
             where: { id: session?.id },
             relations: ["profile"],
@@ -164,12 +172,20 @@ class UserController extends BaseController {
     }
     private async signUp(req: Request, res: Response) {
         const db = req.db;
-        const { username, password, email, gender, phone, name } = req.body;
+        const {
+            username,
+            password,
+            email,
+            gender,
+            phone,
+            name,
+            branch,
+            package: fitnessPackage,
+        } = req.body;
         const user = await db.getRepository(User).findOneBy({
             username: username,
             // role: Role.user,
         });
-        console.log("nname", user);
         if (user) {
             res.status(400).json({ message: "Tên người dùng đã tồn tại" });
             return;
@@ -180,7 +196,7 @@ class UserController extends BaseController {
         profile.gender = gender;
         profile.photo = "";
         profile.phone = phone;
-        await db.getRepository(Profile).save(profile);
+        await Profile.save(profile);
 
         const hashedPassword = bcrypt.hashSync(password, 10);
 
@@ -190,9 +206,35 @@ class UserController extends BaseController {
         newUser.role = Role.user;
         newUser.profile = profile;
 
+        const findBranch = await Branch.findOneBy({
+            id: branch,
+        });
+
+        if (!findBranch) {
+            res.status(400).json({
+                message: "Không tìm thấy chi nhánh",
+            });
+            return;
+        }
+        newUser.branch = findBranch;
+        if (fitnessPackage) {
+            const findPackage = await FitnessPackage.findOneBy({
+                id: fitnessPackage,
+            });
+
+            if (!findPackage) {
+                res.status(400).json({
+                    message: "Không tìm thấy gói tập",
+                });
+                return;
+            }
+            newUser.branch.fitnesspackages.push(findPackage);
+        }
+
         console.log("han user", user);
         try {
-            const data = await db.getRepository(User).save(newUser); // Lưu thông tin người dùng
+            const data = await User.save(newUser); // Lưu thông tin người dùng
+
             req.session.user = data;
             req.session.save();
 
@@ -202,32 +244,6 @@ class UserController extends BaseController {
         }
         // console.log("han tyest success");
     }
-    // private async signIn(req: Request, res: Response) {
-    //     const { username, password } = req.body;
-    //     console.log("user role", username, password);
-    //     // if (role !== "user") {
-    //     //     res.status(400).json({ message: "Role không hợp lệ" });
-    //     // }
-    //     const db = req.db;
-    //     const user = await db.getRepository(User).findOneBy({
-    //         username: username,
-    //         password: password,
-    //         // role: Role.user,
-    //     });
-    //     console.log("han test", user);
-    //     if (user != null) {
-    //         res.json({
-    //             message: "Đăng nhập thành công",
-    //         });
-    //         console.log("success");
-    //         return super.renderVue(req, res, About);
-    //     } else {
-    //         console.log("success failed");
-    //         res.json({
-    //             message: "Đăng nhập khong thanh công",
-    //         });
-    //     }
-    // }
 }
 
 export default UserController;
