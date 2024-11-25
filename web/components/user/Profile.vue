@@ -1,6 +1,7 @@
 le<script setup lang="ts">
 import { as } from "@faker-js/faker/dist/airline-BLb3y-7w";
-import { ref, toRef } from "vue";
+import { watch } from "fs";
+import { onMounted, ref, toRef, watchEffect } from "vue";
 
 const props = defineProps<{
     fullname: string;
@@ -22,13 +23,17 @@ const updateProfile =async()=>{
 
 // Trạng thái chỉnh sửa và giá trị
 const isEditing = ref(false);
-const email = toRef(props, "email");
-const phone = toRef(props, "phone"); // Trực tiếp sử dụng userPhone
+const email =ref("");
+const phone = ref(""); // Trực tiếp sử dụng userPhone
 
 // Bật tắt chế độ chỉnh sửa
 const toggleEdit = () => {
     isEditing.value = !isEditing.value;
 };
+watchEffect(()=>{
+    email.value=props.email;
+    phone.value=props.phone;
+})
 
 // Lưu thay đổi
 const saveChanges = () => {
