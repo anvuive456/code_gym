@@ -13,7 +13,7 @@ import ProfileUser from "../../../web/views/user/ProfileUser.vue";
 import { Role } from "@entities/role.entity";
 import { Profile } from "@entities/profile.entity";
 import { userAuthMiddleware } from "@middlewares/auth.middleware";
-
+import { UpdateProfileDto } from "../../dto/update-profile.dto";
 class UserController extends BaseController {
     protected getBasePath(): string {
         return "/user";
@@ -30,6 +30,8 @@ class UserController extends BaseController {
         );
         ///session
         this.router.get(`/session`, this.getSession);
+        ///session
+        this.router.put(`/update-profile-user`, this.updateProfileUser);
 
         this.router.get(`${this.getBasePath()}/signup`, this.signUpView);
         this.router.post(`${this.getBasePath()}/signup`, this.signUp);
@@ -147,6 +149,37 @@ class UserController extends BaseController {
             message: "Đăng nhập thành công",
         });
     }
+    private async updateProfileUser(
+        req: Request<{}, {}, UpdateProfileDto>,
+        res: Response,
+    ) {
+        const body = req.body; //updateprofile
+        const ses = req.session.user;
+
+        const profileId = await User.createQueryBuilder("user")
+            .leftJoin("user.profile", "profile")
+            .select("profile.id")
+            .where("user.id = :userId", { userId: ses?.id })
+            .getRawOne();
+        // Update Profile bằng Query Builder
+        await Profile.createQueryBuilder()
+            .update(Profile)
+            .set({ email: body.email, phone: body.phone })
+            .where("id = :'id'", { id: profileId })
+            .execute();
+        // Update Branch của User
+        await User.createQueryBuilder()
+            .update(User)
+            .set({ branch: { id: Number(body.branch!) } }) // Cập nhật branch bằng ID
+            .where("id = :userId", { userId: ses?.id })
+            .execute();
+        // Cập nhật FitnessPackage cho User
+        await User.createQueryBuilder()
+            .update(User)
+            .set({ fitnessPackage: { id: Number(body.fitnesspackage) } }) // Chỉ cần ID của FitnessPackage
+            .where("id = :userId", { userId: ses?.id }) //userId" lấyy từ đâu v
+            .execute();
+    }
     private async getSession(req: Request, res: Response) {
         const session = req.session.user;
         if (!session) {
@@ -160,7 +193,7 @@ class UserController extends BaseController {
         }
         const user = await User.findOne({
             where: { id: session?.id },
-            relations: ["profile"],
+            relations: ["profile", "branch", "fitnessPackage"],
         });
         console.log("UserController ~ getSession ~ user:", user);
         res.status(200).json({
@@ -168,6 +201,8 @@ class UserController extends BaseController {
             email: user?.profile?.email,
             fullname: user?.profile?.name,
             phone: user?.profile?.phone,
+            branch: user?.branch?.name,
+            fitnesspackage: user?.fitnessPackage?.name,
         });
     }
     private async signUp(req: Request, res: Response) {

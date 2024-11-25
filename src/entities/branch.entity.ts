@@ -39,6 +39,7 @@ export class Branch extends BaseEntity {
     users: User[];
 
     @ManyToMany(() => FitnessPackage, fitnesspackage => fitnesspackage.branches)
+    
     @JoinTable()
     fitnesspackages: FitnessPackage[];
 

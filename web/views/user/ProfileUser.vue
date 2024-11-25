@@ -7,6 +7,7 @@ import { ref, watchEffect, onMounted } from "vue";
 import useSession from "../../hooks/useSession";
 
 const session = useSession();
+ 
 
 watchEffect(() => {
     console.log("session data::", session.sessionData);
@@ -25,6 +26,8 @@ onMounted(() => {
         :email="session.sessionData.value?.email || ''"
         :phone="session.sessionData.value?.phone || ''"
         :gender="session.sessionData.value?.gender || ''"
+        :branch="session.sessionData.value?.branch||''" 
+        :fitness-package="session.sessionData.value?.fitnesspackage||''" 
     />
 
     <Footer />

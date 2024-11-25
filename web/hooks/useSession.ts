@@ -10,6 +10,8 @@ export default function useSession() {
         phone: string;
         email: string;
         gender: string;
+        branch: string;
+        fitnesspackage: string;
     }>();
 
     async function fetchSession() {
@@ -23,10 +25,11 @@ export default function useSession() {
             return;
         }
         const data = await res.json();
+        console.log("fetchSession ~ data:", data);
         sessionData.value = data; // Lấy danh sách từ API
 
         loading.value = false;
     }
-
+    //t bắt nồi nước cái
     return { loading, error, sessionData, fetchSession };
 }
