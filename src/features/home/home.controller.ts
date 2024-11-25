@@ -220,9 +220,15 @@ class HomeController extends BaseController {
         });
 
         if (!user) {
-            // || !bcrypt.compareSync(password, user.password)
             res.status(401).json({
-                message: "Đăng nhập thất bại",
+                message: "Không tìm thấy người dùng",
+            });
+            return;
+        }
+
+        if (!bcrypt.compareSync(password, user.password)) {
+            res.status(401).json({
+                message: "Sai mật khẩu",
             });
             return;
         }
