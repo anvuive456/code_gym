@@ -1,6 +1,7 @@
-le<script setup lang="ts">
+le
+<script setup lang="ts">
 import { as } from "@faker-js/faker/dist/airline-BLb3y-7w";
-import { ref, toRef } from "vue";
+import { ref, toRef, onBeforeMount, watchEffect } from "vue";
 
 const props = defineProps<{
     fullname: string;
@@ -11,19 +12,31 @@ const props = defineProps<{
     branch: string;
     fitnessPackage: string;
 }>();
-const updateProfile =async()=>{ 
-     await fetch('/update-profile-user',{method:"PUT",body:JSON.stringify({email:email.value,
-        phone:phone.value,
-        gender:props.gender
-        ,branch:props.branch,
-        fitnessPackage:props.fitnessPackage 
-    }),headers:{"content-type":"application/json"}})  
-}
+const updateProfile = async () => {
+    console.log("user data", email.value, phone.value);
+
+    await fetch("/update-profile-user", {
+        method: "PUT",
+        body: JSON.stringify({
+            email: email.value,
+            phone: phone.value,
+            gender: props.gender,
+            branch: props.branch,
+            fitnessPackage: props.fitnessPackage,
+        }),
+        headers: { "content-type": "application/json" },
+    });
+};
 
 // Trạng thái chỉnh sửa và giá trị
 const isEditing = ref(false);
-const email = toRef(props, "email");
-const phone = toRef(props, "phone"); // Trực tiếp sử dụng userPhone
+const email = ref("");
+const phone = ref(""); // Trực tiếp sử dụng userPhone
+
+watchEffect(() => {
+    email.value = props.email;
+    phone.value = props.phone;
+});
 
 // Bật tắt chế độ chỉnh sửa
 const toggleEdit = () => {
@@ -92,15 +105,17 @@ const saveChanges = () => {
                 <div class="table-cell value">
                     {{ gender === "male" ? "Nam" : "Nữ" }}
                 </div>
-            </div><div class="table-row">
+            </div>
+            <div class="table-row">
                 <div class="table-cell label">Chi nhánh</div>
-                <div class="table-cell value"> 
-                {{ props.branch }} 
+                <div class="table-cell value">
+                    {{ props.branch }}
                 </div>
-            </div><div class="table-row">
+            </div>
+            <div class="table-row">
                 <div class="table-cell label">Gói tập</div>
                 <div class="table-cell value">
-                    {{ props.fitnessPackage }} 
+                    {{ props.fitnessPackage }}
                 </div>
             </div>
         </div>

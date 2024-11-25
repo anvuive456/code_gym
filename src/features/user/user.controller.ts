@@ -156,29 +156,37 @@ class UserController extends BaseController {
         const body = req.body; //updateprofile
         const ses = req.session.user;
 
-        const profileId = await User.createQueryBuilder("user")
+        const { profileId } = await User.createQueryBuilder("user")
             .leftJoin("user.profile", "profile")
-            .select("profile.id")
+            .select("profile.id", "profileId")
             .where("user.id = :userId", { userId: ses?.id })
             .getRawOne();
+        console.log("profileId", profileId);
         // Update Profile bằng Query Builder
         await Profile.createQueryBuilder()
             .update(Profile)
             .set({ email: body.email, phone: body.phone })
-            .where("id = :'id'", { id: profileId })
+            .where("id = :id", { id: profileId })
             .execute();
+
         // Update Branch của User
-        await User.createQueryBuilder()
-            .update(User)
-            .set({ branch: { id: Number(body.branch!) } }) // Cập nhật branch bằng ID
-            .where("id = :userId", { userId: ses?.id })
-            .execute();
+        if (body.branch)
+            await User.createQueryBuilder()
+                .update(User)
+                .set({ branch: { id: Number(body.branch!) } }) // Cập nhật branch bằng ID
+                .where("id = :userId", { userId: ses?.id })
+                .execute();
         // Cập nhật FitnessPackage cho User
-        await User.createQueryBuilder()
-            .update(User)
-            .set({ fitnessPackage: { id: Number(body.fitnesspackage) } }) // Chỉ cần ID của FitnessPackage
-            .where("id = :userId", { userId: ses?.id }) //userId" lấyy từ đâu v
-            .execute();
+        if (body.fitnesspackage)
+            await User.createQueryBuilder()
+                .update(User)
+                .set({ fitnessPackage: { id: Number(body.fitnesspackage) } }) // Chỉ cần ID của FitnessPackage
+                .where("id = :userId", { userId: ses?.id }) //userId" lấyy từ đâu v
+                .execute();
+
+        res.status(200).json({
+            message: "Update thành công",
+        });
     }
     private async getSession(req: Request, res: Response) {
         const session = req.session.user;
