@@ -6,9 +6,12 @@ import {
     JoinTable,
     BaseEntity,
     CreateDateColumn,
+    ManyToOne,
+    OneToMany,
 } from "typeorm";
 import { Promotion } from "@entities/promotion.entity";
 import { Branch } from "@entities/branch.entity";
+import { User } from "@entities/user.entity";
 
 @Entity({ name: "packages" })
 export class FitnessPackage extends BaseEntity {
@@ -31,6 +34,9 @@ export class FitnessPackage extends BaseEntity {
     @JoinTable()
     promotions: Promotion[];
 
+    // Quan hệ với user
+    @OneToMany(() => User, e => e.fitnessPackage)
+    user: User[];
     @ManyToMany(() => Branch, branch => branch.fitnesspackages)
     branches: Branch[];
 }

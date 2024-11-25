@@ -6,6 +6,7 @@ import session from "express-session";
 import path from "path";
 import AdminController from "@features/admin/admin.controller";
 import HomeController from "@features/home/home.controller";
+import UserController from "@features/user/user.controller";
 import { ReportController } from "@features/admin/report.controller";
 
 export async function main() {
@@ -49,10 +50,16 @@ export async function main() {
         "@middlewares/db.middleware"
     );
     app.use(dbMiddleware);
+    app.get("/*", function (req, res, next) {
+        res.setHeader("Last-Modified", new Date().toUTCString());
+        next();
+    });
+    app.disable("etag");
 
     // await loadControllers(app);
     app.use(new AdminController().router);
     app.use(new HomeController().router);
+    app.use(new UserController().router);
     app.use(new ReportController().router);
 
     app.listen(port, () => {

@@ -1,5 +1,5 @@
 import { BaseController } from "@interfaces/controller.interface";
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { SignUpDTO } from "../../dto/sign-up.dto";
 import { User } from "@entities/user.entity";
 import { Role } from "@entities/role.entity";
@@ -15,6 +15,7 @@ import Blog from "../../../web/views/user/Blog.vue";
 import Branch from "../../../web/views/user/Branch.vue";
 import SignIn from "../../../web/views/user/SignIn.vue";
 import bcrypt from "bcrypt";
+import { userAuthMiddleware } from "@middlewares/auth.middleware";
 
 class HomeController extends BaseController {
     protected getBasePath(): string {
@@ -22,24 +23,6 @@ class HomeController extends BaseController {
     }
 
     protected initRoutes(): void {
-        this.router.use(async (req, res, next) => {
-            res.locals.active = req.path;
-            const message = req.query.message;
-            if (message) {
-                res.locals.message = message;
-            }
-            const ses = req.session.user;
-            const user = await req.db.getRepository(User).findOne({
-                where: { id: ses?.id },
-                relations: ["profile"],
-            });
-            if (user) {
-                if (user.profile) {
-                    res.locals.userFullName = user?.profile.name;
-                }
-            }
-            next();
-        });
         this.router.get(this.getBasePath(), this.index);
         this.router.get(`${this.getBasePath()}/home`, this.viewHome);
         this.router.get(`${this.getBasePath()}/about`, this.viewAbout);
@@ -52,7 +35,11 @@ class HomeController extends BaseController {
         this.router.get(`${this.getBasePath()}/signin`, this.viewSignIn);
         this.router.post(`${this.getBasePath()}/signin`, this.signIn);
         this.router.get(`${this.getBasePath()}/signout`, this.signOut);
-        this.router.get(`${this.getBasePath()}/profile`, this.viewProfile);
+        this.router.get(
+            `${this.getBasePath()}/profile`,
+            userAuthMiddleware,
+            this.viewProfile,
+        );
         this.router.post(
             `${this.getBasePath()}/update-profile`,
             this.updateProfile,
@@ -212,18 +199,42 @@ class HomeController extends BaseController {
         }
     }
 
-    private async signOut(req: Request, res: Response) {
-        req.session.destroy(err => {
-            if (err)
-                return res.status(500).json({ message: "Không thể đăng xuất" });
-            res.clearCookie("connect.sid"); // Xóa cookie session
-            res.json({ message: "Đăng xuất thành công" });
+    private signOut(req: Request, res: Response, next: NextFunction) {
+        // req.session.user = null;
+        // req.session.save(err => {
+        //     if (err) {
+        //         next(err);
+        //         return;
+        //     }
+
+        //     // req.session.regenerate(err => {
+        //     //     if (err) {
+        //     //         reject(err);
+        //     //         return;
+        //     //     }
+        //     //     res.redirect("/home");
+        //     //     resolve();
+        //     // });
+        //     //
+        //     res.status(200).json({
+        //         message: "Đăng xuất thành công",
+        //     });
+        // });
+        //
+
+        res.setHeader("Last-Modified", new Date().toUTCString());
+
+        req.session.destroy(e => {
+            res.status(200).json({
+                message: "Đăng xuất thành công",
+            });
         });
     }
 
     private async signIn(req: Request, res: Response) {
         const db = req.db;
         const { username, password } = req.body;
+        console.log("user admin", username);
         const user = await db.getRepository(User).findOne({
             where: {
                 username,
@@ -231,6 +242,7 @@ class HomeController extends BaseController {
         });
 
         if (!user) {
+            // || !bcrypt.compareSync(password, user.password)
             res.status(401).json({
                 message: "Không tìm thấy người dùng",
             });
