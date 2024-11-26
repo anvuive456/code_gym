@@ -30,7 +30,7 @@ const phone = ref(""); // Trực tiếp sử dụng userPhone
 const toggleEdit = () => {
     isEditing.value = !isEditing.value;
 };
-watchEffect(()=>{
+watchEffect(()=>{  
     email.value=props.email;
     phone.value=props.phone;
 })
